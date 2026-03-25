@@ -592,6 +592,9 @@ void NfcNotification::PublishNfcNotification(
         request.SetBadgeIconStyle(Notification::NotificationRequest::BadgeStyle::LITTLE);
     }
 
+    auto want = std::make_shared<AbilityRuntime::WantAgent::WantAgent>();
+    request.SetWantAgent(want);
+
     std::string buttonName = GetButtonName(notificationId);
     if (!buttonName.empty()) {
         SetActionButton(buttonName, request);
