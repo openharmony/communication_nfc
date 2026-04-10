@@ -195,8 +195,8 @@ namespace OHOS {
         }
         std::shared_ptr<NdefTag> ndefTag = NdefTag::GetTag(tagInfo);
 
-        FuzzedDttaProvider fdp(data, size);
-        short tnf = fdp.ConsumeIntergral<short>();
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
         std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
@@ -220,8 +220,8 @@ namespace OHOS {
         }
         std::shared_ptr<NdefTag> ndefTag = NdefTag::GetTag(tagInfo);
 
-        FuzzedDttaProvider fdp(data, size);
-        short tnf = fdp.ConsumeIntergral<short>();
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
         std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord

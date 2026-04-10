@@ -85,8 +85,8 @@ namespace OHOS {
         if (size < FUZZER_THRESHOLD_4) {
             return;
         }
-        FuzzedDttaProvider fdp(data, size);
-        short tnf = fdp.ConsumeIntergral<short>();
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
         std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
@@ -151,8 +151,8 @@ namespace OHOS {
         if (size < FUZZER_THRESHOLD_4) {
             return;
         }
-        FuzzedDttaProvider fdp(data, size);
-        short tnf = fdp.ConsumeIntergral<short>();
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
         std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
@@ -172,8 +172,8 @@ namespace OHOS {
         if (size < FUZZER_THRESHOLD_7) {
             return;
         }
-        FuzzedDttaProvider fdp(data, size);
-        short tnf = fdp.ConsumeIntergral<short>();
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
         std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
@@ -193,8 +193,8 @@ namespace OHOS {
         if (size < FUZZER_THRESHOLD_4) {
             return;
         }
-        FuzzedDttaProvider fdp(data, size);
-        short tnf = fdp.ConsumeIntergral<short>();
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
         std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
