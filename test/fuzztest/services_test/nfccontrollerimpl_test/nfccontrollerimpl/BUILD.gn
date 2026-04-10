@@ -15,5 +15,9 @@ import("//build/test.gni")
 
 group("nfccontrollerimpl_fuzztest") {
   testonly = true
-  deps = [ "nfccontrollerimpl_fuzzer:fuzztest" ]
+  deps = [
+    "nfccontrollerimpl_fuzzer:fuzztest",
+    "nfccontrollerimpl2_fuzzer:fuzztest",
+    "nfccontrollerimpl3_fuzzer:fuzztest",
+  ]
 }
