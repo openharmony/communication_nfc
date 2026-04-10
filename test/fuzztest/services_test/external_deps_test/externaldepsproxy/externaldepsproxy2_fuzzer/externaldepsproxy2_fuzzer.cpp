@@ -29,8 +29,6 @@ namespace NFC {
     using namespace OHOS::NFC::KITS;
 
     constexpr const auto FUZZER_THRESHOLD = 4;
-    constexpr const auto FUZZER_THRESHOLD_FOUR = 16;
-    constexpr const auto FUZZER_THRESHOLD_TWO = 8;
 
     void ConvertToUint32s(const uint8_t* ptr, uint32_t* outPara, uint16_t outParaLen)
     {

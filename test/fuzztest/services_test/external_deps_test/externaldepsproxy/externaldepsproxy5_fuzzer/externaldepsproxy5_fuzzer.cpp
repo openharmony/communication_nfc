@@ -29,8 +29,6 @@ namespace NFC {
     using namespace OHOS::NFC::KITS;
 
     constexpr const auto FUZZER_THRESHOLD = 4;
-    constexpr const auto FUZZER_THRESHOLD_FOUR = 16;
-    constexpr const auto FUZZER_THRESHOLD_TWO = 8;
 
     void ConvertToUint32s(const uint8_t* ptr, uint32_t* outPara, uint16_t outParaLen)
     {
@@ -73,7 +71,8 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     /* Run your code on data */
     OHOS::NFC::FuzzInitAppList(data, size);
     OHOS::NFC::FuzzNfcDataClear(data, size);
-    OHOS::NFC::FuzzWriteForegroundFuzzStartVibratorOnceAppChangeHiSysEvent(data, size);
+    OHOS::NFC::FuzzWriteForegroundAppChangeHiSysEvent(data, size);
+    OHOS::NFC::FuzzStartVibratorOnce(data, size);
     OHOS::NFC::(data, size);
     return 0;
 }

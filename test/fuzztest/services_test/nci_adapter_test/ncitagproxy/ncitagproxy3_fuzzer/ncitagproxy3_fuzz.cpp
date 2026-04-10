@@ -28,8 +28,6 @@ namespace OHOS {
     using namespace OHOS::NFC::KITS;
 
     constexpr const auto FUZZER_INT32_THRESHOLD = 4;  // 4 uint8 form 1 uint32
-    constexpr const auto FUZZER_2INT32_THRESHOLD = 8;  // 8 uint8 form 2 uint32
-    constexpr const auto FUZZER_3INT32_THRESHOLD = 12;  // 12 uint8 form 3 uint32
 
     void ConvertToUint32s(const uint8_t* ptr, uint32_t* outPara, uint16_t outParaLen)
     {

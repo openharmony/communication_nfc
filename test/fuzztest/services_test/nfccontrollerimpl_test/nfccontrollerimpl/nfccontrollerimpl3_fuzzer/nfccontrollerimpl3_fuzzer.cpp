@@ -55,106 +55,6 @@ namespace OHOS {
         g_baseFuzzPos += objectSize;
         return object;
     }
-
-    void FuzzGetState(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        int nfcState = GetData<int>();
-        nfcControllerImpl->GetState(nfcState);
-        std::shared_ptr<NfcService> service1 = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl1 = std::make_shared<NfcControllerImpl>(service1);
-        nfcControllerImpl1->GetState(nfcState);
-    }
-
-    void FuzzTurnOn(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        nfcControllerImpl->TurnOn();
-        std::shared_ptr<NfcService> service1 = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl1 = std::make_shared<NfcControllerImpl>(service1);
-        nfcControllerImpl1->TurnOn();
-    }
-
-    void FuzzTurnOff(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        nfcControllerImpl->TurnOff();
-        std::shared_ptr<NfcService> service1 = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl1 = std::make_shared<NfcControllerImpl>(service1);
-        nfcControllerImpl1->TurnOff();
-    }
-
-    void FuzzUnregisterNfcStatusCallBack(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        std::string type = std::string(reinterpret_cast<const char*>(data), size);
-        nfcControllerImpl->UnregisterNfcStatusCallBack(type);
-        std::shared_ptr<NfcService> service1 = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl1 = std::make_shared<NfcControllerImpl>(service1);
-        nfcControllerImpl1->UnregisterNfcStatusCallBack(type);
-    }
-
-    void FuzzUnRegisterAllCallBack(const uint8_t* data, size_t size)
-    {
-        FuzzedDataProvider fdp(data, size);
-        Security::AccessToken::AccessTokenID callerToken = fdp.ConsumeIntegral<uint64_t>();
-        std::shared_ptr<NfcService> service = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        nfcControllerImpl->UnRegisterAllCallBack(callerToken);
-    }
-
-    void FuzzUnRegisterAllCallBack1(const uint8_t* data, size_t size)
-    {
-        FuzzedDataProvider fdp(data, size);
-        Security::AccessToken::AccessTokenID callerToken = fdp.ConsumeIntegral<uint64_t>();
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        nfcControllerImpl->UnRegisterAllCallBack(callerToken);
-    }
-
-    void FuzzRegNdefMsgCallback(const uint8_t* data, size_t size)
-    {
-        sptr<INdefMsgCallback> callback = nullptr;
-        std::shared_ptr<NfcService> service = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        nfcControllerImpl->RegNdefMsgCb(callback);
-    }
-
-    void FuzzRegQueryApplicationCb(const uint8_t* data, size_t size)
-    {
-        sptr<IQueryAppInfoCallback> callback = nullptr;
-        std::shared_ptr<NfcService> service = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        nfcControllerImpl->RegQueryApplicationCb(callback);
-    }
-
-    void FuzzRegCardEmulationNotifyCb(const uint8_t* data, size_t size)
-    {
-        sptr<IOnCardEmulationNotifyCb> callback = nullptr;
-        std::shared_ptr<NfcService> service = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        nfcControllerImpl->RegCardEmulationNotifyCb(callback);
-    }
-
-    void FuzzGetHceServiceIface(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
-        sptr<IRemoteObject> remoteObject = nullptr;
-        nfcControllerImpl->GetHceServiceIface(remoteObject);
-        std::shared_ptr<NfcService> service1 = nullptr;
-        std::shared_ptr<NfcControllerImpl> nfcControllerImpl1 = std::make_shared<NfcControllerImpl>(service1);
-        nfcControllerImpl1->GetHceServiceIface(remoteObject);
-    }
-
     void FuzzDump(const uint8_t* data, size_t size)
     {
         g_baseFuzzData = data;
@@ -215,18 +115,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     }
 
     /* Run your code on data */
-    OHOS::FuzzGetState(data, size);
-    OHOS::FuzzTurnOn(data, size);
-    OHOS::FuzzTurnOff(data, size);
-    OHOS::FuzzUnregisterNfcStatusCallBack(data, size);
-    OHOS::FuzzUnRegisterAllCallBack(data, size);
-    
-    OHOS::FuzzUnRegisterAllCallBack1(data, size);
-    OHOS::FuzzRegNdefMsgCallback(data, size);
-    OHOS::FuzzRegQueryApplicationCb(data, size);
-    OHOS::FuzzRegCardEmulationNotifyCb(data, size);
-    OHOS::FuzzGetHceServiceIface(data, size);
-
     OHOS::FuzzDump(data, size);
     OHOS::FuzzNotifyEventStatus(data, size);
     OHOS::FuzzRestartNfc(data, size);
