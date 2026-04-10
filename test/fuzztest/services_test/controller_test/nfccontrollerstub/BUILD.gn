@@ -17,8 +17,8 @@ group("nfccontrollerstub_fuzztest") {
   testonly = true
   deps = [
     "nfccontrollerstub_fuzzer:fuzztest",
-    "nfccontrollerstub_fuzzer2:fuzztest",
-    "nfccontrollerstub_fuzzer3:fuzztest",
-    "nfccontrollerstub_fuzzer4:fuzztest"
+    "nfccontrollerstub2_fuzzer:fuzztest",
+    "nfccontrollerstub3_fuzzer:fuzztest",
+    "nfccontrollerstub4_fuzzer:fuzztest"
   ]
 }
