@@ -15,5 +15,10 @@ import("//build/test.gni")
 
 group("ncitagproxy_fuzztest") {
   testonly = true
-  deps = [ "ncitagproxy_fuzzer:fuzztest" ]
+  deps = [
+    "ncitagproxy_fuzzer:fuzztest",
+    "ncitagproxy2_fuzzer:fuzztest",
+    "ncitagproxy3_fuzzer:fuzztest",
+    "ncitagproxy4_fuzzer:fuzztest",
+  ]
 }

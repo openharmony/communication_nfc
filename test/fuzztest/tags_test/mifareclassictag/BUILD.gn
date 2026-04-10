@@ -19,5 +19,5 @@ group("mifareclassictag_fuzztest") {
     "mifareclassictag_fuzzer:fuzztest",
     "mifareclassictag2_fuzzer:fuzztest",
     "mifareclassictag3_fuzzer:fuzztest",
-  s]
+  ]
 }
