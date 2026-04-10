@@ -79,63 +79,50 @@ namespace OHOS {
         return object;
     }
 
-    void FuzzCallbackEnter(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        service->Initialize();
-        std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        uint32_t code = GetData<uint32_t>();
-        hceSession->CallbackEnter(code);
-    }
-
-    void FuzzCallbackExit(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        service->Initialize();
-        std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        uint32_t code = GetData<int32_t>();
-        int32_t result = GetData<int32_t>();
-        hceSession->CallbackExit(code, result);
-    }
-
-    void FuzzIsDefaultService(const uint8_t* data, size_t size)
+    void FuzzUnRegAllCallback(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
+        std::shared_ptr<HceSession> hceSession1 = std::make_shared<HceSession>(nullptr);
         std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        ElementName element;
-        std::string type = NfcSdkCommon::BytesVecToHexString(data, size);
-        bool isDefaultService = data[0] % INT_TO_BOOL_DIVISOR;
-        hceSession->IsDefaultService(element, type, isDefaultService);
+        FuzzedDataProvider fdp(data, size);
+        Security::AccessToken::AccessTokenID callerToken = fdp.ConsumeIntegral<uint64_t>();
+        hceSession->UnRegAllCallback(callerToken);
         std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
         std::shared_ptr<CeService> ceService = std::make_shared<CeService>(service, nciCeProxy);
         hceSession->ceService_ = ceService;
-        hceSession->IsDefaultService(element, type, isDefaultService);
+        hceSession->UnRegAllCallback(callerToken);
     }
 
-    void FuzzStartHce(const uint8_t* data, size_t size)
+    void FuzzHandleWhenRemoteDie(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
         std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        ElementName element;
-        std::vector<std::string> aids;
-        aids.push_back(NfcSdkCommon::BytesVecToHexString(data, size));
-        hceSession->StartHce(element, aids);
+        Security::AccessToken::AccessTokenID callerToken = fdp.ConsumeIntegral<uint64_t>();
+        hceSession->HandleWhenRemoteDie(callerToken);
+        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
+        std::shared_ptr<CeService> ceService = std::make_shared<CeService>(service, nciCeProxy);
+        hceSession->ceService_ = ceService;
+        hceSession->HandleWhenRemoteDie(callerToken);
     }
 
-    void FuzzStopHce(const uint8_t* data, size_t size)
+    void FuzzGetPaymentServices(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
+        service->Initialize();
         std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        ElementName element;
-        hceSession->StopHce(element);
+        CePaymentServicesParcelable parcelable;
+        hceSession->GetPaymentServices(parcelable);
+    }
+
+    void FuzzAppendSimBundle(const uint8_t* data, size_t size)
+    {
+        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
+        service->Initialize();
+        std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
+        std::vector<AbilityInfo> paymentAbilityInfos;
+        hceSession->AppendSimBundle(paymentAbilityInfos);
+        std::shared_ptr<HceSession> hceSession1 = std::make_shared<HceSession>(nullptr);
+        hceSession1->AppendSimBundle(paymentAbilityInfos);
     }
 }
 
@@ -147,10 +134,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     }
 
     /* Run your code on data */
-    OHOS::FuzzCallbackEnter(data, size);
-    OHOS::FuzzCallbackExit(data, size);
-    OHOS::FuzzIsDefaultService(data, size);
-    OHOS::FuzzStartHce(data, size);
-    OHOS::FuzzStopHce(data, size);
+    OHOS::FuzzUnRegAllCallback(data, size);
+    OHOS::FuzzHandleWhenRemoteDie(data, size);
+    OHOS::FuzzGetPaymentServices(data, size);
+    OHOS::FuzzAppendSimBundle(data, size);
     return 0;
 }

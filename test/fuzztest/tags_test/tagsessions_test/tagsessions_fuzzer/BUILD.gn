@@ -29,6 +29,11 @@ ohos_fuzztest("TagSessionsFuzzTest") {
 
   deps = fuzz_deps
 
+  defines = [
+    "private=public",
+    "DTFUZZ_TEST",
+  ]
+
   external_deps = fuzz_external_deps
 }
 

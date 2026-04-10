@@ -13,19 +13,19 @@
 
 import("//build/config/features.gni")
 import("//build/test.gni")
-import("../../../../../../nfc.gni")
-import("../../../../nfcfuzz.gni")
+import("../../../../../nfc.gni")
+import("../../../nfcfuzz.gni")
 
-ohos_fuzztest("TagSessionFuzzTest") {
+ohos_fuzztest("TagSessions2FuzzTest") {
   module_out_path = fuzz_module_out_path
 
-  fuzz_config_file = "$NFC_DIR/test/fuzztest/services_test/tagsession_test/tagsession/tagsession_fuzzer"
+  fuzz_config_file = "$NFC_DIR/test/fuzztest/tags_test/tagsessions_test/tagsessions2_fuzzer"
 
   include_dirs = fuzz_include_dirs
 
   cflags = fuzz_cflags
 
-  sources = [ "tagsession_fuzzer.cpp" ]
+  sources = [ "tagsessions2_fuzzer.cpp" ]
 
   deps = fuzz_deps
 
@@ -42,6 +42,6 @@ group("fuzztest") {
   deps = []
   deps += [
     # deps file
-    ":TagSessionFuzzTest",
+    ":TagSessions2FuzzTest",
   ]
 }
