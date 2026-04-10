@@ -30,8 +30,6 @@ namespace OHOS {
     using namespace OHOS::NFC::KITS;
 
     constexpr const auto FUZZER_THRESHOLD = 4;
-    constexpr const auto INT_TO_BOOL_DIVISOR = 2;
-    std::shared_ptr<NFC::AppStateObserver> g_appStateObserver = nullptr;
 
     const uint8_t *g_baseFuzzData = nullptr;
     size_t g_baseFuzzSize = 0;
