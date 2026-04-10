@@ -29,7 +29,6 @@ namespace OHOS {
     using namespace OHOS::NFC::KITS;
 
     constexpr const auto FUZZER_THRESHOLD = 4;
-    constexpr const auto INT_TO_BOOL_DIVISOR = 2;
 
     const uint8_t *g_baseFuzzData = nullptr;
     size_t g_baseFuzzSize = 0;
