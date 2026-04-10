@@ -75,45 +75,54 @@ public:
         return object;
     }
 
-    void FuzzResetTimeout(const uint8_t* data, size_t size)
+    void FuzzRegForegroundDispatchInner(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        uint32_t timeOutArray[1];
-        ConvertToUint32s(data, timeOutArray, 1);
-        int tagRfDiscId = timeOutArray[0];
-        tagSession->ResetTimeout(tagRfDiscId);
-        service->Initialize();
-        sptr<NFC::TAG::TagSession> tagSession1 = new NFC::TAG::TagSession(service);
-        tagSession1->ResetTimeout(tagRfDiscId);
+        ElementName element;
+        element.SetBundleName(NfcSdkCommon::BytesVecToHexString(data, size));
+        element.SetAbilityName(NfcSdkCommon::BytesVecToHexString(data, size));
+        std::vector<uint32_t> discTech;
+        sptr<NFC::KITS::IForegroundCallback> callback = nullptr;
+        bool isVendorApp = true;
+        tagSession->RegForegroundDispatchInner(element, discTech, callback, isVendorApp);
     }
 
-    void FuzzIsTagFieldOn(const uint8_t* data, size_t size)
+    void FuzzIsFgRegistered(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        uint32_t timeOutArray[1];
-        ConvertToUint32s(data, timeOutArray, 1);
-        int tagRfDiscId = timeOutArray[0];
-        bool isTagFieldOn = false;
-        tagSession->IsTagFieldOn(tagRfDiscId, isTagFieldOn);
-        service->Initialize();
-        sptr<NFC::TAG::TagSession> tagSession1 = new NFC::TAG::TagSession(service);
-        tagSession1->IsTagFieldOn(tagRfDiscId, isTagFieldOn);
+        ElementName element;
+        element.SetBundleName(NfcSdkCommon::BytesVecToHexString(data, size));
+        element.SetAbilityName(NfcSdkCommon::BytesVecToHexString(data, size));
+        std::vector<uint32_t> discTech;
+        sptr<NFC::KITS::IForegroundCallback> callback = nullptr;
+        tagSession->IsFgRegistered(element, discTech, callback);
     }
 
-    void FuzzGetFgDataVecSize(const uint8_t* data, size_t size)
+    void FuzzIsReaderRegistered(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        tagSession->GetFgDataVecSize();
+        ElementName element;
+        element.SetBundleName(NfcSdkCommon::BytesVecToHexString(data, size));
+        element.SetAbilityName(NfcSdkCommon::BytesVecToHexString(data, size));
+        std::vector<uint32_t> discTech;
+        sptr<NFC::KITS::IReaderModeCallback> callback = nullptr;
+        tagSession->IsReaderRegistered(element, discTech, callback, 0);
     }
 
-    void FuzzGetReaderDataVecSize(const uint8_t* data, size_t size)
+    void FuzzRegReaderModeInner(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        tagSession->GetReaderDataVecSize();
+        ElementName element;
+        element.SetBundleName(NfcSdkCommon::BytesVecToHexString(data, size));
+        element.SetAbilityName(NfcSdkCommon::BytesVecToHexString(data, size));
+        std::vector<uint32_t> discTech;
+        sptr<NFC::KITS::IReaderModeCallback> callback = nullptr;
+        bool isVendorApp = true;
+        tagSession->RegReaderModeInner(element, discTech, callback, isVendorApp);
     }
 }
 
@@ -124,11 +133,11 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
         return 0;
     }
 
-    /* Run your code on data */
-    OHOS::FuzzResetTimeout(data, size);
-    OHOS::FuzzIsTagFieldOn(data, size);
-    OHOS::FuzzGetFgDataVecSize(data, size);
-    OHOS::FuzzGetReaderDataVecSize(data, size);
+    /* Run your code on data */   
+    OHOS::FuzzRegForegroundDispatchInner(data, size);
+    OHOS::FuzzIsFgRegistered(data, size);
+    OHOS::FuzzIsReaderRegistered(data, size);
+    OHOS::FuzzRegReaderModeInner(data, size);
     return 0;
 }
 

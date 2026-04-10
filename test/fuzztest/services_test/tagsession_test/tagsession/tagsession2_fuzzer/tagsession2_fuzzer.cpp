@@ -75,46 +75,59 @@ public:
         return object;
     }
 
-    void FuzzResetTimeout(const uint8_t* data, size_t size)
+    void FuzzHandleAppStateChanged(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
+        std::string bundleName = NfcSdkCommon::BytesVecToHexString(data, size);
+        std::string abilityName = NfcSdkCommon::BytesVecToHexString(data, size);
         uint32_t timeOutArray[1];
         ConvertToUint32s(data, timeOutArray, 1);
-        int tagRfDiscId = timeOutArray[0];
-        tagSession->ResetTimeout(tagRfDiscId);
-        service->Initialize();
-        sptr<NFC::TAG::TagSession> tagSession1 = new NFC::TAG::TagSession(service);
-        tagSession1->ResetTimeout(tagRfDiscId);
+        int abilityState = timeOutArray[0];
+        tagSession->HandleAppStateChanged(bundleName, abilityName, abilityState);
     }
 
-    void FuzzIsTagFieldOn(const uint8_t* data, size_t size)
+    void FuzzRegForegroundDispatch(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
+        ElementName element;
+        element.SetBundleName(NfcSdkCommon::BytesVecToHexString(data, size));
+        element.SetAbilityName(NfcSdkCommon::BytesVecToHexString(data, size));
+        std::vector<uint32_t> discTech;
         uint32_t timeOutArray[1];
         ConvertToUint32s(data, timeOutArray, 1);
-        int tagRfDiscId = timeOutArray[0];
-        bool isTagFieldOn = false;
-        tagSession->IsTagFieldOn(tagRfDiscId, isTagFieldOn);
-        service->Initialize();
-        sptr<NFC::TAG::TagSession> tagSession1 = new NFC::TAG::TagSession(service);
-        tagSession1->IsTagFieldOn(tagRfDiscId, isTagFieldOn);
+        discTech.push_back(timeOutArray[0]);
+        sptr<IForegroundCallbackImpl> iForegroundCallbackImpl =
+            sptr<IForegroundCallbackImpl>(new (std::nothrow) IForegroundCallbackImpl());
+        tagSession->RegForegroundDispatch(element, discTech, iForegroundCallbackImpl);
     }
 
-    void FuzzGetFgDataVecSize(const uint8_t* data, size_t size)
+    void FuzzUnregForegroundDispatch(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        tagSession->GetFgDataVecSize();
+        ElementName element;
+        element.SetBundleName(NfcSdkCommon::BytesVecToHexString(data, size));
+        element.SetAbilityName(NfcSdkCommon::BytesVecToHexString(data, size));
+        tagSession->UnregForegroundDispatch(element);
     }
 
-    void FuzzGetReaderDataVecSize(const uint8_t* data, size_t size)
+    void FuzzRegReaderMode(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        tagSession->GetReaderDataVecSize();
+        ElementName element;
+        element.SetBundleName(NfcSdkCommon::BytesVecToHexString(data, size));
+        element.SetAbilityName(NfcSdkCommon::BytesVecToHexString(data, size));
+        std::vector<uint32_t> discTech;
+        uint32_t timeOutArray[1];
+        ConvertToUint32s(data, timeOutArray, 1);
+        discTech.push_back(timeOutArray[0]);
+        sptr<IReaderModeCallback> callback = nullptr;
+        tagSession->RegReaderMode(element, discTech, callback);
     }
+
 }
 
 /* Fuzzer entry point */
@@ -125,10 +138,10 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     }
 
     /* Run your code on data */
-    OHOS::FuzzResetTimeout(data, size);
-    OHOS::FuzzIsTagFieldOn(data, size);
-    OHOS::FuzzGetFgDataVecSize(data, size);
-    OHOS::FuzzGetReaderDataVecSize(data, size);
+    OHOS::FuzzHandleAppStateChanged(data, size);
+    OHOS::FuzzRegForegroundDispatch(data, size);
+    OHOS::FuzzUnregForegroundDispatch(data, size);
+    OHOS::FuzzRegReaderMode(data, size);
     return 0;
 }
 

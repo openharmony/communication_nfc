@@ -79,63 +79,48 @@ namespace OHOS {
         return object;
     }
 
-    void FuzzCallbackEnter(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        service->Initialize();
-        std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        uint32_t code = GetData<uint32_t>();
-        hceSession->CallbackEnter(code);
-    }
-
-    void FuzzCallbackExit(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
-        service->Initialize();
-        std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        uint32_t code = GetData<int32_t>();
-        int32_t result = GetData<int32_t>();
-        hceSession->CallbackExit(code, result);
-    }
-
-    void FuzzIsDefaultService(const uint8_t* data, size_t size)
+    void FuzzRegHceCmdCallbackByToken(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
         std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        ElementName element;
+        sptr<KITS::IHceCmdCallback> callback = nullptr;
         std::string type = NfcSdkCommon::BytesVecToHexString(data, size);
-        bool isDefaultService = data[0] % INT_TO_BOOL_DIVISOR;
-        hceSession->IsDefaultService(element, type, isDefaultService);
+        hceSession->RegHceCmdCallback(callback, type);
         std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
         std::shared_ptr<CeService> ceService = std::make_shared<CeService>(service, nciCeProxy);
         hceSession->ceService_ = ceService;
-        hceSession->IsDefaultService(element, type, isDefaultService);
+        hceSession->RegHceCmdCallback(callback, type);
     }
 
-    void FuzzStartHce(const uint8_t* data, size_t size)
+    void FuzzRegHceCmdCallbackByToken2(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
         std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        ElementName element;
-        std::vector<std::string> aids;
-        aids.push_back(NfcSdkCommon::BytesVecToHexString(data, size));
-        hceSession->StartHce(element, aids);
+        sptr<KITS::IHceCmdCallback> callback = sptr<HCE::HceCmdCallbackStub>(new HCE::HceCmdCallbackStub);
+        std::string type = NfcSdkCommon::BytesVecToHexString(data, size);
+        hceSession->RegHceCmdCallback(callback, type);
     }
 
-    void FuzzStopHce(const uint8_t* data, size_t size)
+    void FuzzUnRegHceCmdCallback(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
         std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
-        ElementName element;
-        hceSession->StopHce(element);
+        sptr<KITS::IHceCmdCallback> callback = nullptr;
+        std::string type = NfcSdkCommon::BytesVecToHexString(data, size);
+        hceSession->UnregHceCmdCallback(callback, type);
+        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
+        std::shared_ptr<CeService> ceService = std::make_shared<CeService>(service, nciCeProxy);
+        hceSession->ceService_ = ceService;
+        hceSession->UnregHceCmdCallback(callback, type);
+    }
+
+    void FuzzUnRegHceCmdCallback2(const uint8_t* data, size_t size)
+    {
+        std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
+        std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
+        sptr<KITS::IHceCmdCallback> callback = sptr<HCE::HceCmdCallbackStub>(new HCE::HceCmdCallbackStub);
+        std::string type = NfcSdkCommon::BytesVecToHexString(data, size);
+        hceSession->UnregHceCmdCallback(callback, type);
     }
 }
 
@@ -147,10 +132,9 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     }
 
     /* Run your code on data */
-    OHOS::FuzzCallbackEnter(data, size);
-    OHOS::FuzzCallbackExit(data, size);
-    OHOS::FuzzIsDefaultService(data, size);
-    OHOS::FuzzStartHce(data, size);
-    OHOS::FuzzStopHce(data, size);
+    OHOS::FuzzRegHceCmdCallbackByToken(data, size);
+    OHOS::FuzzRegHceCmdCallbackByToken2(data, size);
+    OHOS::FuzzUnRegHceCmdCallback(data, size);
+    OHOS::FuzzUnRegHceCmdCallback2(data, size);
     return 0;
 }
