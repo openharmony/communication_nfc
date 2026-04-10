@@ -79,12 +79,12 @@ namespace OHOS {
         FuzzedDataProvider fdp(data, size);
         uint16_t Len = fdp.ConsumeIntegral<uint16_t>();
         std::shared_ptr<NciTagProxy> nciTagProxy = std::make_shared<NciTagProxy>();
-        uint32_t discTechArray[int32Len];
+        uint32_t discTechArray[Len];
         for (int i = 0; i < Len; i++) {
             discTechArray[i] = fdp.ConsumeIntegral<uint32_t>();
         }
         std::vector<uint32_t> discTech;
-        for (uint32_t i = 0; i < int32Len; i++) {
+        for (uint32_t i = 0; i < Len; i++) {
             discTech.push_back(discTechArray[i]);
         }
         nciTagProxy->GetTechMaskFromTechList(discTech);
