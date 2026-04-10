@@ -96,6 +96,7 @@ namespace OHOS {
     {
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
         std::shared_ptr<HceSession> hceSession = std::make_shared<HceSession>(service);
+        FuzzedDataProvider fdp(data, size);
         Security::AccessToken::AccessTokenID callerToken = fdp.ConsumeIntegral<uint64_t>();
         hceSession->HandleWhenRemoteDie(callerToken);
         std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
