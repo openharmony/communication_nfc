@@ -37,7 +37,6 @@ namespace OHOS {
     constexpr const auto TEST_NDEF_TAG_MODE = NdefTag::EmNdefTagMode::MODE_READ_ONLY;
     constexpr const auto TEST_NDEF_MSG = "ndef";
     constexpr const auto TEST_NDEF_TAG_LENGTH = 2;
-    constexpr const uint8_t MAX_TNF_NUMS = 7;
     constexpr const uint8_t MAX_LENGTH_STRING = 10;
 
     const uint8_t *g_baseFuzzData = nullptr;

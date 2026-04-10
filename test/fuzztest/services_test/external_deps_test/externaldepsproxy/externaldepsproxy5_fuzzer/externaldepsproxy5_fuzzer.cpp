@@ -73,7 +73,6 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::NFC::FuzzNfcDataClear(data, size);
     OHOS::NFC::FuzzWriteForegroundAppChangeHiSysEvent(data, size);
     OHOS::NFC::FuzzStartVibratorOnce(data, size);
-    OHOS::NFC::(data, size);
     return 0;
 }
 
