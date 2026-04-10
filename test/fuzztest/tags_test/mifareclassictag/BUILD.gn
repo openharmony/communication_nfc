@@ -15,5 +15,9 @@ import("//build/test.gni")
 
 group("mifareclassictag_fuzztest") {
   testonly = true
-  deps = [ "mifareclassictag_fuzzer:fuzztest" ]
+  deps = [
+    "mifareclassictag_fuzzer:fuzztest",
+    "mifareclassictag2_fuzzer:fuzztest",
+    "mifareclassictag3_fuzzer:fuzztest",
+  s]
 }

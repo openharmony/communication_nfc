@@ -15,5 +15,9 @@ import("//build/test.gni")
 
 group("tagabilitydispatcher_fuzztest") {
   testonly = true
-  deps = [ "tagabilitydispatcher_fuzzer:fuzztest" ]
+  deps = [
+    "tagabilitydispatcher_fuzzer:fuzztest",
+    "tagabilitydispatcher2_fuzzer:fuzztest",
+    "tagabilitydispatcher3_fuzzer:fuzztest",
+  ]
 }

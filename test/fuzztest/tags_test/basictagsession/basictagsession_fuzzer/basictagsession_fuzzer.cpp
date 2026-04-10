@@ -93,7 +93,7 @@ namespace OHOS {
     void FuzzSetTimeout(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfo();
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         uint32_t timeOutArray[1];
         ConvertToUint32s(data, timeOutArray, 1);
@@ -103,7 +103,7 @@ namespace OHOS {
     void FuzzSendCommand(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfo();
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         std::string hexCmdData = NfcSdkCommon::UnsignedCharToHexString(data[0]);
 
@@ -118,7 +118,7 @@ namespace OHOS {
     void FuzzConnect(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfoData(data, size);
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         basicTagSession.Connect();
     }
@@ -126,7 +126,7 @@ namespace OHOS {
     void FuzzIsConnected(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfoData(data, size);
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         basicTagSession.IsConnected();
     }
@@ -134,7 +134,7 @@ namespace OHOS {
     void FuzzClose(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfoData(data, size);
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         basicTagSession.Close();
     }
@@ -142,7 +142,7 @@ namespace OHOS {
     void FuzzGetTimeout(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfo();
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         uint32_t timeOutArray[1];
         ConvertToUint32s(data, timeOutArray, 1);
@@ -153,7 +153,7 @@ namespace OHOS {
     void FuzzResetTimeout(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfoData(data, size);
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         basicTagSession.ResetTimeout();
     }
@@ -161,7 +161,7 @@ namespace OHOS {
     void FuzzGetTagUid(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfoData(data, size);
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         basicTagSession.GetTagUid();
     }
@@ -169,7 +169,7 @@ namespace OHOS {
     void FuzzGetMaxSendCommandLength(const uint8_t* data, size_t size)
     {
         std::shared_ptr<TagInfo> tagInfo = GetTagInfo();
-        TagTechnology tagTechnology = static_cast<TagTechnology>(size % TAG_TECHNOLOGY_MAX_LEN);
+        TagTechnology tagTechnology = static_cast<TagTechnology>(data[0] % TAG_TECHNOLOGY_MAX_LEN);
         BasicTagSession basicTagSession{tagInfo, tagTechnology};
         uint32_t timeOutArray[1];
         ConvertToUint32s(data, timeOutArray, 1);

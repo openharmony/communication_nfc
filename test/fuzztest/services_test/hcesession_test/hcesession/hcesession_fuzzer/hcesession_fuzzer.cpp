@@ -24,6 +24,7 @@
 #include "nfc_service_ipc_interface_code.h"
 #include "loghelper.h"
 #include <securec.h>
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC;

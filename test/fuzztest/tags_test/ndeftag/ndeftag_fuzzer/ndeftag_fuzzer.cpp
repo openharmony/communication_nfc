@@ -25,6 +25,7 @@
 #include "taginfo.h"
 #include "tag_session_proxy.h"
 #include <securec.h>
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC::KITS;
@@ -37,6 +38,7 @@ namespace OHOS {
     constexpr const auto TEST_NDEF_MSG = "ndef";
     constexpr const auto TEST_NDEF_TAG_LENGTH = 2;
     constexpr const uint8_t MAX_TNF_NUMS = 7;
+    constexpr const uint8_t MAX_LENGTH_STRING = 10;
 
     const uint8_t *g_baseFuzzData = nullptr;
     size_t g_baseFuzzSize = 0;
@@ -193,8 +195,9 @@ namespace OHOS {
         }
         std::shared_ptr<NdefTag> ndefTag = NdefTag::GetTag(tagInfo);
 
-        short tnf = static_cast<short>(data[0] % OHOS::MAX_TNF_NUMS);
-        std::string id = NfcSdkCommon::UnsignedCharToHexString(data[1]);
+        FuzzedDttaProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntergral<short>();
+        std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
         std::string payload = NfcSdkCommon::UnsignedCharToHexString(data[2]);
@@ -217,8 +220,9 @@ namespace OHOS {
         }
         std::shared_ptr<NdefTag> ndefTag = NdefTag::GetTag(tagInfo);
 
-        short tnf = static_cast<short>(data[0] % OHOS::MAX_TNF_NUMS);
-        std::string id = NfcSdkCommon::UnsignedCharToHexString(data[1]);
+        FuzzedDttaProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntergral<short>();
+        std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
         std::string payload = NfcSdkCommon::UnsignedCharToHexString(data[2]);

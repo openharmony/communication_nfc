@@ -15,5 +15,10 @@ import("//build/test.gni")
 
 group("hostcardemulationmanager_fuzztest") {
   testonly = true
-  deps = [ "hostcardemulationmanager_fuzzer:fuzztest" ]
+  deps = [
+    "hostcardemulationmanager_fuzzer:fuzztest",
+    "hostcardemulationmanager2_fuzzer:fuzztest",
+    "hostcardemulationmanager3_fuzzer:fuzztest",
+    "hostcardemulationmanager4_fuzzer:fuzztest",
+  ]
 }
