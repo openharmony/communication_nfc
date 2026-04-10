@@ -15,5 +15,12 @@ import("//build/test.gni")
 
 group("externaldepsproxy_fuzztest") {
   testonly = true
-  deps = [ "externaldepsproxy_fuzzer:fuzztest" ]
+  deps = [
+    "externaldepsproxy_fuzzer:fuzztest",
+    "externaldepsproxy2_fuzzer:fuzztest",
+    "externaldepsproxy3_fuzzer:fuzztest",
+    "externaldepsproxy4_fuzzer:fuzztest",
+    "externaldepsproxy5_fuzzer:fuzztest",
+    "externaldepsproxy6_fuzzer:fuzztest",
+  ]
 }

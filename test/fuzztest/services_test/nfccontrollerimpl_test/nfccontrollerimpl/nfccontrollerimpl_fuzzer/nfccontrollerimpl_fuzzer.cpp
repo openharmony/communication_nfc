@@ -22,6 +22,7 @@
 #include "nfc_sdk_common.h"
 #include "nfc_service_ipc_interface_code.h"
 #include <securec.h>
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC;
@@ -103,7 +104,8 @@ namespace OHOS {
 
     void FuzzUnRegisterAllCallBack(const uint8_t* data, size_t size)
     {
-        Security::AccessToken::AccessTokenID callerToken = static_cast<Security::AccessToken::AccessTokenID>(data[0]);
+        FuzzedDttaProvider fdp(data, size);
+        Security::AccessToken::AccessTokenID callerToken = fdp.ConsumeIntergral<uint64_t>();
         std::shared_ptr<NfcService> service = nullptr;
         std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
         nfcControllerImpl->UnRegisterAllCallBack(callerToken);
@@ -111,7 +113,8 @@ namespace OHOS {
 
     void FuzzUnRegisterAllCallBack1(const uint8_t* data, size_t size)
     {
-        Security::AccessToken::AccessTokenID callerToken = static_cast<Security::AccessToken::AccessTokenID>(data[0]);
+        FuzzedDttaProvider fdp(data, size);
+        Security::AccessToken::AccessTokenID callerToken = fdp.ConsumeIntergral<uint64_t>();
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
         std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);
         nfcControllerImpl->UnRegisterAllCallBack(callerToken);
