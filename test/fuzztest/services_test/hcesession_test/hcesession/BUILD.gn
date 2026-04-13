@@ -18,6 +18,6 @@ group("hcesession_fuzztest") {
   deps = [
     "hcesession_fuzzer:fuzztest",
     "hcesession2_fuzzer:fuzztest",
-    "hcesession3_fuzzer:fuzztest"
+    "hcesession3_fuzzer:fuzztest",
   ]
 }

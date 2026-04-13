@@ -77,14 +77,14 @@ namespace OHOS {
     void FuzzGetTechMaskFromTechList(const uint8_t* data, size_t size)
     {
         FuzzedDataProvider fdp(data, size);
-        uint16_t Len = fdp.ConsumeIntegral<uint16_t>();
+        uint16_t len = fdp.ConsumeIntegral<uint16_t>();
         std::shared_ptr<NciTagProxy> nciTagProxy = std::make_shared<NciTagProxy>();
-        uint32_t discTechArray[Len];
-        for (int i = 0; i < Len; i++) {
+        uint32_t discTechArray[len];
+        for (int i = 0; i < len; i++) {
             discTechArray[i] = fdp.ConsumeIntegral<uint32_t>();
         }
         std::vector<uint32_t> discTech;
-        for (uint32_t i = 0; i < Len; i++) {
+        for (uint32_t i = 0; i < len; i++) {
             discTech.push_back(discTechArray[i]);
         }
         nciTagProxy->GetTechMaskFromTechList(discTech);
