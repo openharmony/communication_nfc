@@ -50,8 +50,8 @@ namespace OHOS {
     void FuzzNotifyEventStatus(const uint8_t* data, size_t size)
     {
         FuzzedDataProvider fdp(data, size);
-        int eventType = fdp.ConsumeIntegral<int32_t>();
-        int arg1 = fdp.ConsumeIntegral<int32_t>();
+        int eventType = fdp.ConsumeIntegral<int>();
+        int arg1 = fdp.ConsumeIntegral<int>();
         std::string arg2 = "";
         std::shared_ptr<NfcService> service = std::make_shared<NfcService>();
         std::shared_ptr<NfcControllerImpl> nfcControllerImpl = std::make_shared<NfcControllerImpl>(service);

@@ -74,7 +74,6 @@ public:
 
     void FuzzNdefMakeReadOnly(const uint8_t* data, size_t size)
     {
-
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
         FuzzedDataProvider fdp(data, size);
@@ -90,7 +89,7 @@ public:
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
         FuzzedDataProvider fdp(data, size);
-        int32_t tagRfDiscId = fdp.ConsumeIntegral<int32_t>();;
+        int32_t tagRfDiscId = fdp.ConsumeIntegral<int32_t>();
         std::string key = NfcSdkCommon::BytesVecToHexString(data, size);
         tagSession->FormatNdef(tagRfDiscId, key);
         service->Initialize();
