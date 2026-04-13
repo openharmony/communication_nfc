@@ -45,7 +45,7 @@ namespace OHOS {
 
         // Shift the 0th number to the left by 24 bits, shift the 1st number to the left by 16 bits,
         // shift the 2nd number to the left by 8 bits, and not shift the 3rd number to the left
-        return (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]);
+        return (ptr[0] << 8 * 3) | (ptr[1] << 8 * 2) | (ptr[2] << 8) | (ptr[3]);
     }
 
     std::shared_ptr<TagInfo> FuzzGetTagInfo()
