@@ -113,7 +113,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
         return 0;
     }
 
-    /* Run your code on data */   
+    /* Run your code on data */
     OHOS::FuzzRegForegroundDispatchInner(data, size);
     OHOS::FuzzIsFgRegistered(data, size);
     OHOS::FuzzIsReaderRegistered(data, size);
