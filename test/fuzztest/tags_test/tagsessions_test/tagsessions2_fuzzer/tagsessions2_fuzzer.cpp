@@ -119,7 +119,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
         return 0;
     }
 
-    /* Run your code on data */    
+    /* Run your code on data */
     OHOS::FuzzGetTechList(data, size);
     OHOS::FuzzIsNdef(data, size);
     OHOS::FuzzSendRawFrame(data, size);
