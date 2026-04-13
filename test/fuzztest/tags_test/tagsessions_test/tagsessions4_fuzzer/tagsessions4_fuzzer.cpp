@@ -32,10 +32,6 @@ namespace OHOS {
     constexpr const auto FUZZER_THRESHOLD = 4;
     constexpr const auto INT_TO_BOOL_DIVISOR = 2;
 
-    const uint8_t *g_baseFuzzData = nullptr;
-    size_t g_baseFuzzSize = 0;
-    size_t g_baseFuzzPos = 0;
-
 class IForegroundCallbackImpl : public IForegroundCallback {
 public:
     IForegroundCallbackImpl() {}
@@ -61,31 +57,13 @@ public:
         }
     }
 
-    template <class T> T GetData()
-    {
-        T object{};
-        size_t objectSize = sizeof(object);
-        if (g_baseFuzzData == nullptr || objectSize > g_baseFuzzSize - g_baseFuzzPos) {
-            return object;
-        }
-        errno_t ret = memcpy_s(&object, objectSize, g_baseFuzzData + g_baseFuzzPos, objectSize);
-        if (ret != EOK) {
-            return {};
-        }
-        g_baseFuzzPos += objectSize;
-        return object;
-    }
-
     void FuzzGetMaxTransceiveLength(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        int32_t tagRfDiscId = GetData<int32_t>();
-        int32_t maxSize = GetData<int32_t>();
+        FuzzedDataProvider fdp(data, size);
+        int32_t tagRfDiscId = fdp.ConsumeIntegral<int32_t>();
+        int32_t maxSize = fdp.ConsumeIntegral<int32_t>();
         tagSession->GetMaxTransceiveLength(tagRfDiscId, maxSize);
     }
 

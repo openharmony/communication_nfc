@@ -23,6 +23,7 @@
 #include "nfc_sdk_common.h"
 #include "nfc_service_ipc_interface_code.h"
 #include <securec.h>
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC::TAG;
@@ -30,10 +31,6 @@ namespace OHOS {
 
     constexpr const auto FUZZER_THRESHOLD = 4;
     constexpr const auto INT_TO_BOOL_DIVISOR = 2;
-
-    const uint8_t *g_baseFuzzData = nullptr;
-    size_t g_baseFuzzSize = 0;
-    size_t g_baseFuzzPos = 0;
 
 class IForegroundCallbackImpl : public IForegroundCallback {
 public:
@@ -60,21 +57,6 @@ public:
         }
     }
 
-    template <class T> T GetData()
-    {
-        T object{};
-        size_t objectSize = sizeof(object);
-        if (g_baseFuzzData == nullptr || objectSize > g_baseFuzzSize - g_baseFuzzPos) {
-            return object;
-        }
-        errno_t ret = memcpy_s(&object, objectSize, g_baseFuzzData + g_baseFuzzPos, objectSize);
-        if (ret != EOK) {
-            return {};
-        }
-        g_baseFuzzPos += objectSize;
-        return object;
-    }
-
     void FuzzUnregReaderMode(const uint8_t* data, size_t size)
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
@@ -87,13 +69,10 @@ public:
 
     void FuzzIsConnected(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        int tagRfDiscId = GetData<int>();
+        FuzzedDataProvider fdp(data, size); 
+        int tagRfDiscId = fdp.ConsumeIntegral<int>();
         bool isConnected = data[0] % INT_TO_BOOL_DIVISOR;
         tagSession->IsConnected(tagRfDiscId, isConnected);
         service->Initialize();
@@ -103,29 +82,23 @@ public:
 
     void FuzzSetTimeout(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        int tagRfDiscId = GetData<int>();
-        int timeout = GetData<int>();
-        int technology = GetData<int>();
+        FuzzedDataProvider fdp(data, size); 
+        int tagRfDiscId = fdp.ConsumeIntegral<int>();
+        int timeout = fdp.ConsumeIntegral<int>();
+        int technology = fdp.ConsumeIntegral<int>();
         tagSession->SetTimeout(tagRfDiscId, timeout, technology);
     }
 
     void FuzzGetTimeout(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        int tagRfDiscId = GetData<int>();
-        int technology = GetData<int>();
-        int timeout = GetData<int>();
+        FuzzedDataProvider fdp(data, size); 
+        int tagRfDiscId = fdp.ConsumeIntegral<int>();
+        int technology = fdp.ConsumeIntegral<int>();
+        int timeout = fdp.ConsumeIntegral<int>();
         tagSession->GetTimeout(tagRfDiscId, technology, timeout);
     }
 }

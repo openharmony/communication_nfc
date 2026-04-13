@@ -26,6 +26,7 @@
 #include "taginfo.h"
 #include "tag_session_proxy.h"
 #include <securec.h>
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC::KITS;
@@ -36,10 +37,6 @@ namespace OHOS {
     constexpr const auto TEST_SAK = 0x28;
     constexpr const auto TEST_ATQA = "0400";
 
-    const uint8_t *g_baseFuzzData = nullptr;
-    size_t g_baseFuzzSize = 0;
-    size_t g_baseFuzzPos = 0;
-
     uint32_t ConvertToUint32(const uint8_t* ptr)
     {
         if (ptr == nullptr) {
@@ -49,21 +46,6 @@ namespace OHOS {
         // Shift the 0th number to the left by 24 bits, shift the 1st number to the left by 16 bits,
         // shift the 2nd number to the left by 8 bits, and not shift the 3rd number to the left
         return (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]);
-    }
-
-    template <class T> T GetData()
-    {
-        T object{};
-        size_t objectSize = sizeof(object);
-        if (g_baseFuzzData == nullptr || objectSize > g_baseFuzzSize - g_baseFuzzPos) {
-            return object;
-        }
-        errno_t ret = memcpy_s(&object, objectSize, g_baseFuzzData + g_baseFuzzPos, objectSize);
-        if (ret != EOK) {
-            return {};
-        }
-        g_baseFuzzPos += objectSize;
-        return object;
     }
 
     std::shared_ptr<TagInfo> FuzzGetTagInfo()
@@ -92,49 +74,40 @@ namespace OHOS {
 
     void FuzzGetBlockCountInSector(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
         if (tagInfo == nullptr) {
             std::cout << "tagInfo is nullptr." << std::endl;
             return;
         }
         std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        int sectorIndex = GetData<int>();
+        FuzzedDataProvider fdp(data, size);
+        int sectorIndex = fdp.ConsumeIntegral<int>();
         mifareClassisTag->GetBlockCountInSector(sectorIndex);
     }
 
     void FuzzGetBlockIndexFromSector(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
         if (tagInfo == nullptr) {
             std::cout << "tagInfo is nullptr." << std::endl;
             return;
         }
         std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        int sectorIndex = GetData<int>();
+        FuzzedDataProvider fdp(data, size);
+        int sectorIndex = fdp.ConsumeIntegral<int>();
         mifareClassisTag->GetBlockIndexFromSector(sectorIndex);
     }
 
     void FuzzGetSectorIndexFromBlock(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
         if (tagInfo == nullptr) {
             std::cout << "tagInfo is nullptr." << std::endl;
             return;
         }
         std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        int blockIndex = GetData<int>();
+        FuzzedDataProvider fdp(data, size);
+        int blockIndex = fdp.ConsumeIntegral<int>();
         mifareClassisTag->GetSectorIndexFromBlock(blockIndex);
     }
 

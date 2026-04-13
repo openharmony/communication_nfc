@@ -22,16 +22,13 @@
 #include "nfc_service_ipc_interface_code.h"
 #include "tag_ability_dispatcher.h"
 #include <securec.h>
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
 namespace NFC {
     using namespace OHOS::NFC::TAG;
     using namespace OHOS::NFC::KITS;
     constexpr const auto FUZZER_THRESHOLD = 4;
-
-    const uint8_t *g_baseFuzzData = nullptr;
-    size_t g_baseFuzzSize = 0;
-    size_t g_baseFuzzPos = 0;
 
     void ConvertToUint32s(const uint8_t* ptr, uint32_t* outPara, uint16_t outParaLen)
     {
@@ -41,34 +38,15 @@ namespace NFC {
         }
     }
 
-    template <class T> T GetData()
-    {
-        T object{};
-        size_t objectSize = sizeof(object);
-        if (g_baseFuzzData == nullptr || objectSize > g_baseFuzzSize - g_baseFuzzPos) {
-            return object;
-        }
-        errno_t ret = memcpy_s(&object, objectSize, g_baseFuzzData + g_baseFuzzPos, objectSize);
-        if (ret != EOK) {
-            return {};
-        }
-        g_baseFuzzPos += objectSize;
-        return object;
-    }
-
-
     void FuzzDispatchTagAbility(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-        
         std::vector<int> tagTechList;
         tagTechList.push_back(static_cast<int>(TagTechnology::NFC_A_TECH));
         std::vector<AppExecFwk::PacMap> tagTechExtras;
         AppExecFwk::PacMap tagTechExtrasData;
         tagTechExtras.push_back(tagTechExtrasData);
-        int tagRfDiscId = GetData<int>();
+        FuzzedDataProvider fdp(data, size);
+        int tagRfDiscId = fdp.ConsumeIntegral<int>();
         std::string tagUid = NfcSdkCommon::BytesVecToHexString(data, size);
         std::shared_ptr<KITS::TagInfo> tagInfo =
             std::make_shared<KITS::TagInfo>(tagTechList, tagTechExtras, tagUid, tagRfDiscId, nullptr);
@@ -79,14 +57,11 @@ namespace NFC {
 
     void FuzzDispatchTagAbility1(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::vector<int> tagTechList;
         std::vector<AppExecFwk::PacMap> tagTechExtras;
         std::string tagUid = std::string(reinterpret_cast<const char*>(data), size);
-        int tagRfDiscId = GetData<int>();
+        FuzzedDataProvider fdp(data, size);
+        int tagRfDiscId = fdp.ConsumeIntegral<int>();
         std::shared_ptr<KITS::TagInfo> tagInfo =
             std::make_shared<KITS::TagInfo>(tagTechList, tagTechExtras, tagUid, tagRfDiscId, nullptr);
         OHOS::sptr<IRemoteObject> tagServiceIface = nullptr;
@@ -96,14 +71,11 @@ namespace NFC {
 
     void FuzzDispatchAbilityMultiApp(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::vector<int> tagTechList;
         std::vector<AppExecFwk::PacMap> tagTechExtras;
         std::string tagUid = std::string(reinterpret_cast<const char*>(data), size);
-        int tagRfDiscId = GetData<int>();
+        FuzzedDataProvider fdp(data, size);
+        int tagRfDiscId = fdp.ConsumeIntegral<int>();
         std::shared_ptr<KITS::TagInfo> tagInfo =
             std::make_shared<KITS::TagInfo>(tagTechList, tagTechExtras, tagUid, tagRfDiscId, nullptr);
         AAFwk::Want want;
@@ -113,16 +85,13 @@ namespace NFC {
 
     void FuzzDispatchAbilityMultiApp1(const uint8_t* data, size_t size)
     {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
         std::vector<int> tagTechList;
         tagTechList.push_back(static_cast<int>(TagTechnology::NFC_A_TECH));
         std::vector<AppExecFwk::PacMap> tagTechExtras;
         AppExecFwk::PacMap tagTechExtrasData;
         tagTechExtras.push_back(tagTechExtrasData);
-        int tagRfDiscId = GetData<int>();
+        FuzzedDataProvider fdp(data, size);
+        int tagRfDiscId = fdp.ConsumeIntegral<int>();
         std::string tagUid = NfcSdkCommon::BytesVecToHexString(data, size);
         std::shared_ptr<KITS::TagInfo> tagInfo =
             std::make_shared<KITS::TagInfo>(tagTechList, tagTechExtras, tagUid, tagRfDiscId, nullptr);
