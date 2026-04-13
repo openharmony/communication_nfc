@@ -71,7 +71,7 @@ public:
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        FuzzedDataProvider fdp(data, size); 
+        FuzzedDataProvider fdp(data, size);
         int tagRfDiscId = fdp.ConsumeIntegral<int>();
         bool isConnected = data[0] % INT_TO_BOOL_DIVISOR;
         tagSession->IsConnected(tagRfDiscId, isConnected);
@@ -84,7 +84,7 @@ public:
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        FuzzedDataProvider fdp(data, size); 
+        FuzzedDataProvider fdp(data, size);
         int tagRfDiscId = fdp.ConsumeIntegral<int>();
         int timeout = fdp.ConsumeIntegral<int>();
         int technology = fdp.ConsumeIntegral<int>();
@@ -95,8 +95,8 @@ public:
     {
         std::shared_ptr<NFC::NfcService> service = std::make_shared<NFC::NfcService>();
         sptr<NFC::TAG::TagSession> tagSession = new NFC::TAG::TagSession(service);
-        
-        FuzzedDataProvider fdp(data, size); 
+
+        FuzzedDataProvider fdp(data, size);
         int tagRfDiscId = fdp.ConsumeIntegral<int>();
         int technology = fdp.ConsumeIntegral<int>();
         int timeout = fdp.ConsumeIntegral<int>();
