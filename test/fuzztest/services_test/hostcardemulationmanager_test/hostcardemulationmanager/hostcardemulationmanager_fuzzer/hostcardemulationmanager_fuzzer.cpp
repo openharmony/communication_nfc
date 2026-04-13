@@ -48,31 +48,12 @@ public:
 
     constexpr const auto FUZZER_THRESHOLD = 4;
 
-    const uint8_t *g_baseFuzzData = nullptr;
-    size_t g_baseFuzzSize = 0;
-    size_t g_baseFuzzPos = 0;
-
     void ConvertToUint32s(const uint8_t* ptr, uint32_t* outPara, uint16_t outParaLen)
     {
         for (uint16_t i = 0 ; i < outParaLen ; i++) {
             // 4 uint8s compose 1 uint32 , 8 16 24 is bit operation, 2 3 4 are array subscripts.
             outPara[i] = (ptr[i * 4] << 24) | (ptr[(i * 4) + 1 ] << 16) | (ptr[(i * 4) + 2] << 8) | (ptr[(i * 4) + 3]);
         }
-    }
-
-    template <class T> T GetData()
-    {
-        T object{};
-        size_t objectSize = sizeof(object);
-        if (g_baseFuzzData == nullptr || objectSize > g_baseFuzzSize - g_baseFuzzPos) {
-            return object;
-        }
-        errno_t ret = memcpy_s(&object, objectSize, g_baseFuzzData + g_baseFuzzPos, objectSize);
-        if (ret != EOK) {
-            return {};
-        }
-        g_baseFuzzPos += objectSize;
-        return object;
     }
 
     void FuzzOnHostCardEmulationDataNfcA(const uint8_t* data, size_t size)
