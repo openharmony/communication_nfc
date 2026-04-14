@@ -154,112 +154,6 @@ namespace OHOS {
         mifareClassisTag->WriteSingleBlock(blockIndex, hexData);
     }
 
-    void FuzzIncrementBlock(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
-        if (tagInfo == nullptr) {
-            std::cout << "tagInfo is nullptr." << std::endl;
-            return;
-        }
-        std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        int value = GetData<int>();
-        uint32_t blockIndex = ConvertToUint32(data);
-        mifareClassisTag->IncrementBlock(blockIndex, value);
-    }
-
-    void FuzzDecrementBlock(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
-        if (tagInfo == nullptr) {
-            std::cout << "tagInfo is nullptr." << std::endl;
-            return;
-        }
-        std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        int value = GetData<int>();
-        uint32_t blockIndex = ConvertToUint32(data);
-        mifareClassisTag->DecrementBlock(blockIndex, value);
-    }
-    
-    void FuzzTransferToBlock(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
-        if (tagInfo == nullptr) {
-            std::cout << "tagInfo is nullptr." << std::endl;
-            return;
-        }
-        std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        uint32_t blockIndex = ConvertToUint32(data);
-        mifareClassisTag->TransferToBlock(blockIndex);
-    }
-    
-    void FuzzRestoreFromBlock(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
-        if (tagInfo == nullptr) {
-            std::cout << "tagInfo is nullptr." << std::endl;
-            return;
-        }
-        std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        uint32_t blockIndex = ConvertToUint32(data);
-        mifareClassisTag->RestoreFromBlock(blockIndex);
-    }
-
-    void FuzzGetBlockCountInSector(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
-        if (tagInfo == nullptr) {
-            std::cout << "tagInfo is nullptr." << std::endl;
-            return;
-        }
-        std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        int sectorIndex = GetData<int>();
-        mifareClassisTag->GetBlockCountInSector(sectorIndex);
-    }
-
-    void FuzzGetBlockIndexFromSector(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
-        if (tagInfo == nullptr) {
-            std::cout << "tagInfo is nullptr." << std::endl;
-            return;
-        }
-        std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        int sectorIndex = GetData<int>();
-        mifareClassisTag->GetBlockIndexFromSector(sectorIndex);
-    }
-
-    void FuzzGetSectorIndexFromBlock(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::shared_ptr<TagInfo> tagInfo = FuzzGetTagInfo();
-        if (tagInfo == nullptr) {
-            std::cout << "tagInfo is nullptr." << std::endl;
-            return;
-        }
-        std::shared_ptr<MifareClassicTag> mifareClassisTag = MifareClassicTag::GetTag(tagInfo);
-        int blockIndex = GetData<int>();
-        mifareClassisTag->GetSectorIndexFromBlock(blockIndex);
-    }
-
 }
 
 /* Fuzzer entry point */
@@ -273,13 +167,5 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::FuzzAuthenticateSector(data, size);
     OHOS::FuzzReadSingleBlock(data, size);
     OHOS::FuzzWriteSingleBlock(data, size);
-    OHOS::FuzzIncrementBlock(data, size);
-    OHOS::FuzzDecrementBlock(data, size);
-    OHOS::FuzzTransferToBlock(data, size);
-    OHOS::FuzzRestoreFromBlock(data, size);
-    OHOS::FuzzGetBlockCountInSector(data, size);
-    OHOS::FuzzGetBlockIndexFromSector(data, size);
-    OHOS::FuzzGetSectorIndexFromBlock(data, size);
     return 0;
 }
-

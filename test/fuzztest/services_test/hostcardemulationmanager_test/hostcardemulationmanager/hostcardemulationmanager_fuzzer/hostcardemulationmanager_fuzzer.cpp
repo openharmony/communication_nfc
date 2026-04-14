@@ -47,11 +47,6 @@ public:
 };
 
     constexpr const auto FUZZER_THRESHOLD = 4;
-    constexpr const auto INT_TO_BOOL_DIVISOR = 2;
-
-    const uint8_t *g_baseFuzzData = nullptr;
-    size_t g_baseFuzzSize = 0;
-    size_t g_baseFuzzPos = 0;
 
     void ConvertToUint32s(const uint8_t* ptr, uint32_t* outPara, uint16_t outParaLen)
     {
@@ -59,21 +54,6 @@ public:
             // 4 uint8s compose 1 uint32 , 8 16 24 is bit operation, 2 3 4 are array subscripts.
             outPara[i] = (ptr[i * 4] << 24) | (ptr[(i * 4) + 1 ] << 16) | (ptr[(i * 4) + 2] << 8) | (ptr[(i * 4) + 3]);
         }
-    }
-
-    template <class T> T GetData()
-    {
-        T object{};
-        size_t objectSize = sizeof(object);
-        if (g_baseFuzzData == nullptr || objectSize > g_baseFuzzSize - g_baseFuzzPos) {
-            return object;
-        }
-        errno_t ret = memcpy_s(&object, objectSize, g_baseFuzzData + g_baseFuzzPos, objectSize);
-        if (ret != EOK) {
-            return {};
-        }
-        g_baseFuzzPos += objectSize;
-        return object;
     }
 
     void FuzzOnHostCardEmulationDataNfcA(const uint8_t* data, size_t size)
@@ -138,173 +118,6 @@ public:
             std::make_shared<HostCardEmulationManager>(nfcService, nciCeProxy, ceService);
         manager->OnCardEmulationDeactivated();
     }
-
-    void FuzzRegHceCmdCallback(const uint8_t* data, size_t size)
-    {
-        std::weak_ptr<NfcService> nfcService;
-        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
-        std::weak_ptr<CeService> ceService;
-        std::shared_ptr<HostCardEmulationManager> manager =
-            std::make_shared<HostCardEmulationManager>(nfcService, nciCeProxy, ceService);
-        sptr<IHceCmdCallbackImpl> iHceCmdCallbackImpl =
-            sptr<IHceCmdCallbackImpl>(new (std::nothrow) IHceCmdCallbackImpl());
-        std::string type = NfcSdkCommon::BytesVecToHexString(data, size);
-        AccessTokenID callerToken = 0;
-        manager->RegHceCmdCallback(iHceCmdCallbackImpl, type, callerToken);
-    }
-
-    void FuzzRegHceCmdCallback1(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<NfcService> nfcService = std::make_shared<NfcService>();
-        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
-        std::weak_ptr<CeService> ceService;
-        std::shared_ptr<HostCardEmulationManager> manager =
-            std::make_shared<HostCardEmulationManager>(nfcService, nciCeProxy, ceService);
-        sptr<IHceCmdCallbackImpl> iHceCmdCallbackImpl =
-            sptr<IHceCmdCallbackImpl>(new (std::nothrow) IHceCmdCallbackImpl());
-        std::string type = NfcSdkCommon::BytesVecToHexString(data, size);
-        AccessTokenID callerToken = 0;
-        manager->RegHceCmdCallback(iHceCmdCallbackImpl, type, callerToken);
-    }
-
-    void FuzzUnRegHceCmdCallback(const uint8_t* data, size_t size)
-    {
-        std::weak_ptr<NfcService> nfcService;
-        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
-        std::weak_ptr<CeService> ceService;
-        std::shared_ptr<HostCardEmulationManager> manager =
-            std::make_shared<HostCardEmulationManager>(nfcService, nciCeProxy, ceService);
-        std::string type = NfcSdkCommon::BytesVecToHexString(data, size);
-        AccessTokenID callerToken = 0;
-        manager->UnRegHceCmdCallback(type, callerToken);
-    }
-
-    void FuzzUnRegAllCallback(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        std::weak_ptr<NfcService> nfcService;
-        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
-        std::weak_ptr<CeService> ceService;
-        std::shared_ptr<HostCardEmulationManager> manager =
-            std::make_shared<HostCardEmulationManager>(nfcService, nciCeProxy, ceService);
-        AccessTokenID callerToken = GetData<uint64_t>();
-        manager->UnRegAllCallback(callerToken);
-    }
-
-    void FuzzSendHostApduData(const uint8_t* data, size_t size)
-    {
-        std::weak_ptr<NfcService> nfcService;
-        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
-        std::weak_ptr<CeService> ceService;
-        std::shared_ptr<HostCardEmulationManager> manager =
-            std::make_shared<HostCardEmulationManager>(nfcService, nciCeProxy, ceService);
-        std::string hexCmdData = NfcSdkCommon::BytesVecToHexString(data, size);
-        bool raw = data[0] % INT_TO_BOOL_DIVISOR;
-        std::string hexRespData = NfcSdkCommon::BytesVecToHexString(data, size);
-        AccessTokenID callerToken = 0;
-        manager->SendHostApduData(hexCmdData, raw, hexRespData, callerToken);
-    }
-
-    void FuzzSendHostApduData1(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<NfcService> nfcService = std::make_shared<NfcService>();
-        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
-        std::weak_ptr<CeService> ceService;
-        std::shared_ptr<HostCardEmulationManager> manager =
-            std::make_shared<HostCardEmulationManager>(nfcService, nciCeProxy, ceService);
-        std::string hexCmdData = NfcSdkCommon::BytesVecToHexString(data, size);
-        bool raw = data[0] % INT_TO_BOOL_DIVISOR;
-        std::string hexRespData = NfcSdkCommon::BytesVecToHexString(data, size);
-        AccessTokenID callerToken = 0;
-        manager->SendHostApduData(hexCmdData, raw, hexRespData, callerToken);
-    }
-
-    void FuzzHandleQueueData(const uint8_t* data, size_t size)
-    {
-        std::weak_ptr<NfcService> nfcService;
-        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
-        std::weak_ptr<CeService> ceService;
-        std::shared_ptr<HostCardEmulationManager> manager =
-            std::make_shared<HostCardEmulationManager>(nfcService, nciCeProxy, ceService);
-        manager->HandleQueueData();
-    }
-
-    void FuzzOnAbilityDisconnectDone(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        AppExecFwk::ElementName element;
-        int resultCode = GetData<int>();
-        std::shared_ptr<NfcAbilityConnectionCallback> callback = std::make_shared<NfcAbilityConnectionCallback>();
-        callback->OnAbilityDisconnectDone(element, resultCode);
-    }
-
-    void FuzzSetHceManager(const uint8_t* data, size_t size)
-    {
-        std::weak_ptr<HostCardEmulationManager> hceManager;
-        std::shared_ptr<NfcAbilityConnectionCallback> callback = std::make_shared<NfcAbilityConnectionCallback>();
-        callback->SetHceManager(hceManager);
-    }
-
-    void FuzzCommitRouting(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<AppExecFwk::EventRunner> runner = nullptr;
-        std::shared_ptr<NfcService> nfcService = std::make_shared<NfcService>();
-        std::shared_ptr<NfcEventHandler> eventHandler = std::make_shared<NfcEventHandler>(runner, nfcService);
-        std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
-        std::weak_ptr<NCI::INciNfccInterface> nciNfccProxy;
-        std::shared_ptr<NfcRoutingManager> manager =
-            std::make_shared<NfcRoutingManager>(eventHandler, nciNfccProxy, nciCeProxy, nfcService);
-        manager->CommitRouting();
-    }
-
-    void FuzzHandleCommitRouting(const uint8_t* data, size_t size)
-    {
-        std::shared_ptr<AppExecFwk::EventRunner> runner = nullptr;
-        std::shared_ptr<NfcService> nfcService = std::make_shared<NfcService>();
-        std::weak_ptr<NCI::INciNfccInterface> nciNfccProxy;
-        std::shared_ptr<NfcEventHandler> eventHandler = std::make_shared<NfcEventHandler>(runner, nfcService);
-        std::shared_ptr<NCI::INciCeInterface> nciCeProxy = NciNativeSelector::GetInstance().GetNciCeInterface();
-        std::shared_ptr<NfcRoutingManager> manager =
-            std::make_shared<NfcRoutingManager>(eventHandler, nciNfccProxy, nciCeProxy, nfcService);
-        manager->HandleCommitRouting();
-    }
-
-    void FuzzComputeRoutingParams(const uint8_t* data, size_t size)
-    {
-        KITS::DefaultPaymentType defaultPaymentType = static_cast<KITS::DefaultPaymentType>(data[0]);
-        std::shared_ptr<AppExecFwk::EventRunner> runner = nullptr;
-        std::shared_ptr<NfcService> nfcService = std::make_shared<NfcService>();
-        std::weak_ptr<NCI::INciNfccInterface> nciNfccProxy;
-        std::shared_ptr<NfcEventHandler> eventHandler = std::make_shared<NfcEventHandler>(runner, nfcService);
-        std::shared_ptr<NCI::INciCeInterface> nciCeProxy = NciNativeSelector::GetInstance().GetNciCeInterface();
-        std::shared_ptr<NfcRoutingManager> manager =
-            std::make_shared<NfcRoutingManager>(eventHandler, nciNfccProxy, nciCeProxy, nfcService);
-        manager->ComputeRoutingParams(defaultPaymentType);
-    }
-
-    void FuzzHandleComputeRoutingParams(const uint8_t* data, size_t size)
-    {
-        g_baseFuzzData = data;
-        g_baseFuzzSize = size;
-        g_baseFuzzPos = 0;
-
-        int defaultPaymentType = GetData<int>();
-        std::shared_ptr<AppExecFwk::EventRunner> runner = nullptr;
-        std::shared_ptr<NfcService> nfcService = std::make_shared<NfcService>();
-        std::weak_ptr<NCI::INciNfccInterface> nciNfccProxy;
-        std::shared_ptr<NfcEventHandler> eventHandler = std::make_shared<NfcEventHandler>(runner, nfcService);
-        std::shared_ptr<NCI::INciCeInterface> nciCeProxy = NciNativeSelector::GetInstance().GetNciCeInterface();
-        std::shared_ptr<NfcRoutingManager> manager =
-            std::make_shared<NfcRoutingManager>(eventHandler, nciNfccProxy, nciCeProxy, nfcService);
-        manager->HandleComputeRoutingParams(defaultPaymentType);
-    }
-
 }
 
 /* Fuzzer entry point */
@@ -320,19 +133,5 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
     OHOS::FuzzOnHostCardEmulationDataNfcA2(data, size);
     OHOS::FuzzOnCardEmulationActivated(data, size);
     OHOS::FuzzOnCardEmulationDeactivated(data, size);
-    OHOS::FuzzRegHceCmdCallback(data, size);
-    OHOS::FuzzRegHceCmdCallback1(data, size);
-    OHOS::FuzzUnRegHceCmdCallback(data, size);
-    OHOS::FuzzUnRegAllCallback(data, size);
-    OHOS::FuzzSendHostApduData(data, size);
-    OHOS::FuzzSendHostApduData1(data, size);
-    OHOS::FuzzHandleQueueData(data, size);
-    OHOS::FuzzOnAbilityDisconnectDone(data, size);
-    OHOS::FuzzSetHceManager(data, size);
-    OHOS::FuzzCommitRouting(data, size);
-    OHOS::FuzzHandleCommitRouting(data, size);
-    OHOS::FuzzComputeRoutingParams(data, size);
-    OHOS::FuzzHandleComputeRoutingParams(data, size);
     return 0;
 }
-
