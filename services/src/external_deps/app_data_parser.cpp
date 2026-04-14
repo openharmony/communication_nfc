@@ -492,6 +492,10 @@ bool AppDataParser::RemoveOffHostAppInfo(ElementName &element)
 
 void AppDataParser::InitAppList()
 {
+#ifdef DTFUZZ_TEST
+    appListInitDone_ = true;
+    return;
+#endif
     std::lock_guard<std::mutex> lock(g_mutex);
     if (appListInitDone_) {
         InfoLog("InitAppList: already done");
