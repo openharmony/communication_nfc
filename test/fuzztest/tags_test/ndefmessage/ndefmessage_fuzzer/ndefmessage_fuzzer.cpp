@@ -21,6 +21,7 @@
 
 #include "ndef_message.h"
 #include "nfc_sdk_common.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC::KITS;
@@ -31,8 +32,8 @@ namespace OHOS {
     constexpr const auto FUZZER_THRESHOLD_3 = 3;
     constexpr const auto FUZZER_THRESHOLD_7 = 7;
     constexpr const uint8_t MAX_ENUM_EMRTDTYPE_NUMS = 9;
-    constexpr const uint8_t MAX_TNF_NUMS = 7;
     constexpr const uint8_t GET_BOOL_FACTOR = 2;
+    constexpr const uint8_t MAX_LENGTH_STRING = 10;
 
     bool CheckTnf(short tnf, const std::string& tagRtdType, const std::string& id, const std::string& payload)
     {
@@ -83,8 +84,9 @@ namespace OHOS {
         if (size < FUZZER_THRESHOLD_4) {
             return;
         }
-        short tnf = static_cast<short>(data[0] % OHOS::MAX_TNF_NUMS);
-        std::string id = NfcSdkCommon::UnsignedCharToHexString(data[1]);
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
+        std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
         std::string payload = NfcSdkCommon::UnsignedCharToHexString(data[2]);
@@ -148,8 +150,9 @@ namespace OHOS {
         if (size < FUZZER_THRESHOLD_4) {
             return;
         }
-        short tnf = static_cast<short>(data[0] % OHOS::MAX_TNF_NUMS);
-        std::string id = NfcSdkCommon::UnsignedCharToHexString(data[1]);
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
+        std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
         std::string payload = NfcSdkCommon::UnsignedCharToHexString(data[2]);
@@ -168,8 +171,9 @@ namespace OHOS {
         if (size < FUZZER_THRESHOLD_7) {
             return;
         }
-        short tnf = static_cast<short>(data[0] % OHOS::MAX_TNF_NUMS);
-        std::string id = NfcSdkCommon::UnsignedCharToHexString(data[1]);
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
+        std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
         std::string payload = NfcSdkCommon::UnsignedCharToHexString(data[2]);
@@ -188,8 +192,9 @@ namespace OHOS {
         if (size < FUZZER_THRESHOLD_4) {
             return;
         }
-        short tnf = static_cast<short>(data[0] % OHOS::MAX_TNF_NUMS);
-        std::string id = NfcSdkCommon::UnsignedCharToHexString(data[1]);
+        FuzzedDataProvider fdp(data, size);
+        short tnf = fdp.ConsumeIntegral<short>();
+        std::string id = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
 
         // 2 is an array subscript, which requires 3 strings to form ndefrecord
         std::string payload = NfcSdkCommon::UnsignedCharToHexString(data[2]);

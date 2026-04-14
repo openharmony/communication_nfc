@@ -15,5 +15,9 @@ import("//build/test.gni")
 
 group("hcesession_fuzztest") {
   testonly = true
-  deps = [ "hcesession_fuzzer:fuzztest" ]
+  deps = [
+    "hcesession_fuzzer:fuzztest",
+    "hcesession2_fuzzer:fuzztest",
+    "hcesession3_fuzzer:fuzztest",
+  ]
 }
