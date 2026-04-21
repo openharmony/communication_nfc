@@ -26,6 +26,7 @@
 #include "nfc_sdk_common.h"
 #include "nfc_service_ipc_interface_code.h"
 #include "nfc_access_token_mock.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC;
@@ -35,6 +36,7 @@ namespace OHOS {
     constexpr uint32_t MESSAGE_SIZE = NFC::NfcServiceIpcInterfaceCode::COMMAND_CE_HCE_SESSION_BOTTOM;
     constexpr const auto FUZZER_THRESHOLD = 6;
     constexpr const auto INT_TO_BOOL_DIVISOR = 2;
+    constexpr const uint8_t MAX_LENGTH_STRING = 10;
 
     class HceCmdListenerEvent : public IHceCmdCallback {
     public:
@@ -98,9 +100,10 @@ namespace OHOS {
     {
         std::shared_ptr<OHOS::NFC::NfcService> nfcService = std::make_shared<OHOS::NFC::NfcService>();
         std::shared_ptr<NFC::HCE::HceSession> hceSession = std::make_shared<NFC::HCE::HceSession>(nfcService);
-        std::string hexCmdData = std::string(reinterpret_cast<const char*>(data), size);
+        FuzzedDataProvider fdp(data, size);
+        std::string hexCmdData = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         bool raw = data[0] % INT_TO_BOOL_DIVISOR;
-        std::string hexRespData = std::string(reinterpret_cast<const char*>(data), size);
+        std::string hexRespData = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         std::weak_ptr<NCI::INciCeInterface> nciCeProxy;
         std::shared_ptr<CeService> ceService = std::make_shared<CeService>(nfcService, nciCeProxy);
         hceSession->ceService_ = ceService;
