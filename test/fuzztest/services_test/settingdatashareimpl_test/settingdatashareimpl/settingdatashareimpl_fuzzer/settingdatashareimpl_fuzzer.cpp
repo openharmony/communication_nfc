@@ -22,12 +22,14 @@
 #include "setting_data_share_impl.h"
 #include "nfc_sdk_common.h"
 #include "nfc_service_ipc_interface_code.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC;
     using namespace OHOS::NFC::KITS;
 
     constexpr const auto FUZZER_THRESHOLD = 4;
+    constexpr const uint8_t MAX_LENGTH_STRING = 20;
 
     void ConvertToUint32s(const uint8_t* ptr, uint32_t* outPara, uint16_t outParaLen)
     {
@@ -104,7 +106,7 @@ namespace OHOS {
     void FuzzSplit(const uint8_t* data, size_t size)
     {
         std::shared_ptr<SettingDataShareImpl> settingDataShareImpl = std::make_shared<SettingDataShareImpl>();
-        std::string str = std::string(reinterpret_cast<const char*>(data), size);
+        std::string str = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         std::string delim = std::string(reinterpret_cast<const char*>(data), size);
         std::vector<std::string> vec;
         settingDataShareImpl->Split(str, delim, vec);

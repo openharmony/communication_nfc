@@ -23,6 +23,7 @@
 #include "ndef_har_dispatch.h"
 #include "nfc_sdk_common.h"
 #include "nfc_service_ipc_interface_code.h"
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC;
@@ -31,6 +32,7 @@ namespace OHOS {
 
     constexpr const auto FUZZER_THRESHOLD = 4;
     constexpr const auto PAYLOAD_LEN = 600;
+    constexpr const uint8_t MAX_LENGTH_STRING = 10;
 
     void ConvertToUint32s(const uint8_t* ptr, uint32_t* outPara, uint16_t outParaLen)
     {
@@ -222,9 +224,10 @@ namespace OHOS {
 
     void FuzzParseBtHandoverSelect(const uint8_t* data, size_t size)
     {
-        std::string msg = std::string(reinterpret_cast<const char*>(data), size);
+        FuzzedDataProvider fdp(data, size);
+        std::string msg = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         std::shared_ptr<NFC::KITS::NdefMessage> ndef = NdefMessage::GetNdefMessage(msg);
-        std::string payload = std::string(reinterpret_cast<const char*>(data), size);
+        std::string payload = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         std::shared_ptr<NdefBtDataParser> ndefBtDataParser = std::make_shared<NdefBtDataParser>();
         if (ndefBtDataParser == nullptr) {
             return;

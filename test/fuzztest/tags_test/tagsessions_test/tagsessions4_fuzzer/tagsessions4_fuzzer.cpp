@@ -31,6 +31,7 @@ namespace OHOS {
 
     constexpr const auto FUZZER_THRESHOLD = 4;
     constexpr const auto INT_TO_BOOL_DIVISOR = 2;
+    constexpr const uint8_t MAX_LENGTH_STRING = 10;
 
 class IForegroundCallbackImpl : public IForegroundCallback {
 public:
@@ -85,8 +86,9 @@ public:
         ElementName fgElement1;
         ElementName fgElement2;
         tagSession->IsSameAppAbility(fgElement1, fgElement2);
-        fgElement1.bundleName_ = std::string(reinterpret_cast<const char*>(data), size);
-        fgElement1.bundleName_ = std::string(reinterpret_cast<const char*>(data), size);
+        FuzzedDataProvider fdp(data, size);
+        fgElement1.bundleName_ = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
+        fgElement2.bundleName_ = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         tagSession->IsSameAppAbility(fgElement1, fgElement2);
     }
 
