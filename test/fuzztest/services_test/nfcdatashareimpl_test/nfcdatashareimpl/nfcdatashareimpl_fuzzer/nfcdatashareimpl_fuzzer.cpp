@@ -21,12 +21,14 @@
 #include "nfc_sdk_common.h"
 #include "nfc_service_ipc_interface_code.h"
 #include <securec.h>
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC;
     using namespace OHOS::NFC::KITS;
 
     constexpr const auto FUZZER_THRESHOLD = 4;
+    constexpr const uint8_t MAX_LENGTH_STRING = 10;
 
     const uint8_t *g_baseFuzzData = nullptr;
     size_t g_baseFuzzSize = 0;
@@ -68,7 +70,8 @@ namespace OHOS {
         g_baseFuzzPos = 0;
 
         Uri uri(std::string(reinterpret_cast<const char*>(data), size));
-        std::string column = std::string(reinterpret_cast<const char*>(data), size);
+        FuzzedDataProvider fdp(data, size);
+        std::string column = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         int32_t value = GetData<int32_t>();
         std::shared_ptr<NfcDataShareImpl> nfcDataShareImpl = std::make_shared<NfcDataShareImpl>();
         nfcDataShareImpl->GetValue(uri, column, value);
@@ -81,7 +84,8 @@ namespace OHOS {
         g_baseFuzzPos = 0;
 
         Uri uri(std::string(reinterpret_cast<const char*>(data), size));
-        std::string column = std::string(reinterpret_cast<const char*>(data), size);
+        FuzzedDataProvider fdp(data, size);
+        std::string column = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         int value = GetData<int>();
         std::shared_ptr<NfcDataShareImpl> nfcDataShareImpl = std::make_shared<NfcDataShareImpl>();
         nfcDataShareImpl->SetValue(uri, column, value);

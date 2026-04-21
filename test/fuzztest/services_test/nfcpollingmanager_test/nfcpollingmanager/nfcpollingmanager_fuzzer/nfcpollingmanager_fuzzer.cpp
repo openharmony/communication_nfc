@@ -22,12 +22,14 @@
 #include "nfc_sdk_common.h"
 #include "nfc_service_ipc_interface_code.h"
 #include <securec.h>
+#include <fuzzer/FuzzedDataProvider.h>
 
 namespace OHOS {
     using namespace OHOS::NFC;
 
     constexpr const auto FUZZER_THRESHOLD = 4;
     constexpr const auto INT_TO_BOOL_DIVISOR = 2;
+    constexpr const uint8_t MAX_LENGTH_STRING = 10;
 
     const uint8_t *g_baseFuzzData = nullptr;
     size_t g_baseFuzzSize = 0;
@@ -78,10 +80,11 @@ namespace OHOS {
         std::weak_ptr<NCI::INciTagInterface> nciTagProxy;
         std::shared_ptr<NfcPollingManager> nfcPollingManager =
             std::make_shared<NfcPollingManager>(nfcService, nciNfccProxy, nciTagProxy);
-        std::string deviceId = std::string(reinterpret_cast<const char*>(data), size);
-        std::string bundleName = std::string(reinterpret_cast<const char*>(data), size);
-        std::string abilityName = std::string(reinterpret_cast<const char*>(data), size);
-        std::string moduleName = std::string(reinterpret_cast<const char*>(data), size);
+        FuzzedDataProvider fdp(data, size);
+        std::string deviceId = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
+        std::string bundleName = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
+        std::string abilityName = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
+        std::string moduleName = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         AppExecFwk::ElementName element(deviceId, bundleName, abilityName, moduleName);
         std::vector<uint32_t> discTech;
         discTech.push_back(GetData<uint32_t>());
@@ -96,10 +99,11 @@ namespace OHOS {
         std::weak_ptr<NCI::INciTagInterface> nciTagProxy;
         std::shared_ptr<NfcPollingManager> nfcPollingManager =
             std::make_shared<NfcPollingManager>(nfcService, nciNfccProxy, nciTagProxy);
-        std::string deviceId = std::string(reinterpret_cast<const char*>(data), size);
-        std::string bundleName = std::string(reinterpret_cast<const char*>(data), size);
-        std::string abilityName = std::string(reinterpret_cast<const char*>(data), size);
-        std::string moduleName = std::string(reinterpret_cast<const char*>(data), size);
+        FuzzedDataProvider fdp(data, size);
+        std::string deviceId = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
+        std::string bundleName = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
+        std::string abilityName = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
+        std::string moduleName = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         AppExecFwk::ElementName element(deviceId, bundleName, abilityName, moduleName);
         nfcPollingManager->DisableForegroundDispatch(element);
     }
