@@ -106,6 +106,7 @@ namespace OHOS {
     void FuzzSplit(const uint8_t* data, size_t size)
     {
         std::shared_ptr<SettingDataShareImpl> settingDataShareImpl = std::make_shared<SettingDataShareImpl>();
+        FuzzedDataProvider fdp(data, size);
         std::string str = fdp.ConsumeRandomLengthString(MAX_LENGTH_STRING);
         std::string delim = std::string(reinterpret_cast<const char*>(data), size);
         std::vector<std::string> vec;
