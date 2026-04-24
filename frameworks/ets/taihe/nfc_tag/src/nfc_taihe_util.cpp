@@ -33,6 +33,10 @@ std::string NfcTaiheUtil::TaiheArrayToHexString(const array_view<int32_t> &data)
     }
     std::vector<uint8_t> dataBytes = {};
     for (uint16_t i = 0; i < data.size(); i++) {
+        if (data[i] < 0 || data[i] > 255) {
+            ErrorLog("data value out of range");
+            return "";
+        }
         dataBytes.push_back(static_cast<uint8_t>(data[i]));
     }
     return NfcSdkCommon::BytesVecToHexString(&dataBytes[0], dataBytes.size());
