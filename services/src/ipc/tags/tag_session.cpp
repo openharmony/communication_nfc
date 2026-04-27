@@ -16,7 +16,6 @@
 
 #include "app_state_observer.h"
 #include "external_deps_proxy.h"
-#include "foreground_death_recipient.h"
 #include "ipc_skeleton.h"
 #include "loghelper.h"
 #include "reader_mode_death_recipient.h"
