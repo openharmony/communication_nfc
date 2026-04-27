@@ -23,7 +23,7 @@ namespace KITS {
 static const int32_t DEFAULT_REF_COUNT = 1;
 const std::string VAR_UID = "uid";
 const std::string VAR_TECH = "technology";
-const int32_t MAX_ARRAY_LEN = 1024;
+const int32_t MAX_ARRAY_LEN = 4096;
 
 std::shared_ptr<BasicTagSession> NapiNfcTagSession::GetTag(napi_env env, napi_callback_info info,
     size_t argc, napi_value argv[])
