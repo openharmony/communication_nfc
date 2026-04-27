@@ -721,16 +721,7 @@ ErrCode TagSession::RegForegroundDispatch(
         return KITS::ERR_TAG_PARAMETERS;
     }
 
-    std::unique_ptr<ForegroundDeathRecipient> recipient
-        = std::make_unique<ForegroundDeathRecipient>(this, IPCSkeleton::GetCallingTokenID());
-    sptr<IRemoteObject::DeathRecipient> dr(recipient.release());
-    if (!cb->AsObject()->AddDeathRecipient(dr)) {
-        ErrorLog("Failed to add death recipient");
-        return KITS::ERR_TAG_PARAMETERS;
-    }
-
     std::lock_guard<std::mutex> guard(mutex_);
-    foregroundDeathRecipient_ = dr;
     foregroundCallback_ = cb;
     bool isVendorApp = false;
     if (!g_appStateObserver->IsForegroundApp(element.GetBundleName())) {
