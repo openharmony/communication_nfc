@@ -18,7 +18,6 @@
 #include "external_deps_proxy.h"
 #include "ipc_skeleton.h"
 #include "loghelper.h"
-#include "reader_mode_death_recipient.h"
 
 namespace OHOS {
 namespace NFC {
@@ -971,16 +970,7 @@ ErrCode TagSession::RegReaderMode(
         return KITS::ERR_NFC_PARAMETERS;
     }
 
-    std::unique_ptr<ReaderModeDeathRecipient> recipient
-        = std::make_unique<ReaderModeDeathRecipient>(this, IPCSkeleton::GetCallingTokenID());
-    sptr<IRemoteObject::DeathRecipient> dr(recipient.release());
-    if (!cb->AsObject()->AddDeathRecipient(dr)) {
-        ErrorLog("Failed to add death recipient");
-        return KITS::ERR_NFC_PARAMETERS;
-    }
-
     std::lock_guard<std::mutex> guard(mutex_);
-    readerModeDeathRecipient_ = dr;
     readerModeCallback_ = cb;
     bool isVendorApp = false;
     if (!g_appStateObserver->IsForegroundApp(element.GetBundleName())) {
@@ -1041,16 +1031,7 @@ ErrCode TagSession::RegReaderModeWithIntvl(const ElementName& element, const std
         return KITS::ERR_NFC_PARAMETERS;
     }
 
-    std::unique_ptr<ReaderModeDeathRecipient> recipient
-        = std::make_unique<ReaderModeDeathRecipient>(this, IPCSkeleton::GetCallingTokenID());
-    sptr<IRemoteObject::DeathRecipient> dr(recipient.release());
-    if (!cb->AsObject()->AddDeathRecipient(dr)) {
-        ErrorLog("Failed to add death recipient");
-        return KITS::ERR_NFC_PARAMETERS;
-    }
-
     std::lock_guard<std::mutex> guard(mutex_);
-    readerModeDeathRecipient_ = dr;
     readerModeCallback_ = cb;
     bool isVendorApp = false;
     if (!g_appStateObserver->IsForegroundApp(element.GetBundleName())) {
