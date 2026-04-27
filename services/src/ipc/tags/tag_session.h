@@ -277,7 +277,6 @@ private:
 
     sptr<KITS::IForegroundCallback> foregroundCallback_;
     sptr<KITS::IReaderModeCallback> readerModeCallback_;
-    sptr<IRemoteObject::DeathRecipient> foregroundDeathRecipient_ {nullptr};
     sptr<IRemoteObject::DeathRecipient> readerModeDeathRecipient_ {nullptr};
 };
 }  // namespace TAG
