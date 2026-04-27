@@ -588,6 +588,10 @@ void CeService::Initialize()
         hostCardEmulationManager_ =
             std::make_shared<HostCardEmulationManager>(nfcService_, nciCeProxy_, shared_from_this());
     }
+    auto nfcServicePtr = nfcService_.lock();
+    if (nfcServicePtr != nullptr) {
+        nfcServicePtr->NotifyMessageToVendor(KITS::DEF_PAYMENT_APP_CHANGE_KEY, defaultPaymentElement_.GetBundleName());
+    }
     DebugLog("CeService Initialize end");
 }
 
