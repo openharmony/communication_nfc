@@ -84,13 +84,13 @@ napi_value GenerateBusinessError(const napi_env &env, int errCode, const std::st
     napi_value code = nullptr;
     napi_status status = napi_create_uint32(env, errCode, &code);
     if (status != napi_ok) {
-        ErrorLog("napi_status is nullptr");
+        ErrorLog("napi_status is not napi_ok");
         return nullptr;
     }
     napi_value message = nullptr;
     status = napi_create_string_utf8(env, errMessage.c_str(), NAPI_AUTO_LENGTH, &message);
     if (status != napi_ok) {
-        ErrorLog("napi_status is nullptr");
+        ErrorLog("napi_status is not napi_ok");
         return nullptr;
     }
     napi_value businessError = nullptr;
