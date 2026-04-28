@@ -518,7 +518,7 @@ napi_value NapiNfcTagSession::Transmit(napi_env env, napi_callback_info info)
     std::vector<unsigned char> dataBytes = {};
     NAPI_CALL(env, napi_get_array_length(env, params[ARGV_INDEX_0], &arrayLength));
     if (arrayLength > MAX_ARRAY_LEN) {
-        ErrorLog("The length of arrayLength is out of MAX_ARRAY_LEN.");
+        ErrorLog("The length of arrayLength is out of MAX_ARRAY_LEN, arrayLength is: %{public}u", arrayLength);
         return CreateUndefined(env);
     }
     for (uint32_t i = 0; i < arrayLength; ++i) {
