@@ -542,7 +542,7 @@ static bool CheckIncrementBlockParameters(napi_env env, const napi_value paramet
             "blockIndex & value & callback", "number & number & function")) {
             return false;
         }
-        return false;
+        return true;
     } else {
         napi_throw(env, GenerateBusinessError(env, BUSI_ERR_PARAM,
             BuildErrorMessage(BUSI_ERR_PARAM, "", "", "", "")));
