@@ -23,6 +23,7 @@ namespace KITS {
 static const int32_t DEFAULT_REF_COUNT = 1;
 const std::string VAR_UID = "uid";
 const std::string VAR_TECH = "technology";
+const int32_t MAX_ARRAY_LEN = 4096;
 
 std::shared_ptr<BasicTagSession> NapiNfcTagSession::GetTag(napi_env env, napi_callback_info info,
     size_t argc, napi_value argv[])
@@ -516,6 +517,10 @@ napi_value NapiNfcTagSession::Transmit(napi_env env, napi_callback_info info)
     uint32_t arrayLength = 0;
     std::vector<unsigned char> dataBytes = {};
     NAPI_CALL(env, napi_get_array_length(env, params[ARGV_INDEX_0], &arrayLength));
+    if (arrayLength > MAX_ARRAY_LEN) {
+        ErrorLog("The length of arrayLength is out of MAX_ARRAY_LEN, arrayLength is: %{public}u", arrayLength);
+        return CreateUndefined(env);
+    }
     for (uint32_t i = 0; i < arrayLength; ++i) {
         NAPI_CALL(env, napi_get_element(env, params[ARGV_INDEX_0], i, &hexCmdDataValue));
         NAPI_CALL(env, napi_get_value_int32(env, hexCmdDataValue, &hexCmdData));

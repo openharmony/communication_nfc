@@ -24,6 +24,7 @@ using namespace OHOS::NFC::KITS;
 
 const uint16_t MAX_ARRAY_LENGTH = 512;
 const uint16_t HEX_BYTE_LENGTH = 2;
+const uint8_t DATA_MAX_VALUE = 255;
 
 std::string NfcTaiheUtil::TaiheArrayToHexString(const array_view<int32_t> &data)
 {
@@ -33,6 +34,10 @@ std::string NfcTaiheUtil::TaiheArrayToHexString(const array_view<int32_t> &data)
     }
     std::vector<uint8_t> dataBytes = {};
     for (uint16_t i = 0; i < data.size(); i++) {
+        if (data[i] < 0 || data[i] > DATA_MAX_VALUE) {
+            ErrorLog("data value out of range");
+            return "";
+        }
         dataBytes.push_back(static_cast<uint8_t>(data[i]));
     }
     return NfcSdkCommon::BytesVecToHexString(&dataBytes[0], dataBytes.size());

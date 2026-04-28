@@ -780,7 +780,7 @@ public:
         
         EmNfcForumType type = tagSession_->GetNdefTagType();
         InfoLog("type %{public}d", static_cast<int>(type));
-        return ::tag::NfcForumType::from_value(1);
+        return ::tag::NfcForumType::from_value(static_cast<int>(type));
     }
 
     ::nfctech::NdefMessage getNdefMessage()

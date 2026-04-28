@@ -82,9 +82,17 @@ std::string BuildErrorMessage(int errCode, std::string funcName, std::string for
 napi_value GenerateBusinessError(const napi_env &env, int errCode, const std::string &errMessage)
 {
     napi_value code = nullptr;
-    napi_create_uint32(env, errCode, &code);
+    napi_status status = napi_create_uint32(env, errCode, &code);
+    if (status != napi_ok) {
+        ErrorLog("napi_status is not napi_ok");
+        return nullptr;
+    }
     napi_value message = nullptr;
-    napi_create_string_utf8(env, errMessage.c_str(), NAPI_AUTO_LENGTH, &message);
+    status = napi_create_string_utf8(env, errMessage.c_str(), NAPI_AUTO_LENGTH, &message);
+    if (status != napi_ok) {
+        ErrorLog("napi_status is not napi_ok");
+        return nullptr;
+    }
     napi_value businessError = nullptr;
     napi_create_error(env, nullptr, message, &businessError);
     napi_set_named_property(env, businessError, KEY_CODE, code);
