@@ -85,8 +85,8 @@ array<int32_t> NfcTaiheUtil::HexStringToTaiheArray(const std::string &src)
     unsigned int srcIntValue;
     for (uint32_t i = 0; i < bytesLen; i++) {
         strByte = src.substr(i * HEX_BYTE_LENGTH, HEX_BYTE_LENGTH);
-        if (sscanf_s(strByte.c_str(), "%x", &srcIntValue) <= 0) {
-            ErrorLog("sscanf_s failed.");
+        if (!NfcSdkCommon::ParseHexOctet(strByte, srcIntValue)) {
+            ErrorLog("leftover or invalid hex octet.");
             dataVec.clear();
             return array<int32_t>(array_view<int32_t>(dataVec));
         }

@@ -231,6 +231,7 @@ public:
     static uint64_t GetRelativeTime();
     static std::string CodeMiddlePart(const std::string &src);
     static bool SecureStringToInt(const std::string &str, int32_t &value, int base);
+    static bool ParseHexOctet(const std::string &text, unsigned int &out);
     static int GetSdkVersion(void);
     static bool GetConfigFromJson(const std::string &key, std::string &value);
     static bool IsNfcEdmForceEnable();

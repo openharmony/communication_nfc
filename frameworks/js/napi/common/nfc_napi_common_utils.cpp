@@ -366,8 +366,8 @@ void ConvertStringToNumberArray(napi_env env, napi_value &result, std::string sr
     for (uint32_t i = 0; i < strLength; i += HEX_BYTE_LEN) {
         // parse the hex string bytes into array.
         std::string oneByte = srcValue.substr(i, HEX_BYTE_LEN);
-        if (sscanf_s(oneByte.c_str(), "%x", &srcIntValue) <= 0) {
-            ErrorLog("ConvertStringToNumberArray, sscanf_s failed.");
+        if (!NfcSdkCommon::ParseHexOctet(oneByte, srcIntValue)) {
+            ErrorLog("ConvertStringToNumberArray, leftover or invalid hex octet.");
             return;
         }
         unsigned char hexByte = static_cast<unsigned char>(srcIntValue & 0xFF);

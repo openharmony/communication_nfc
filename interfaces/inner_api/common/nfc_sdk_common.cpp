@@ -15,7 +15,9 @@
 #include "nfc_sdk_common.h"
 
 #include <algorithm>
+#include <charconv>
 #include <mutex>
+#include <system_error>
 #include <sstream>
 #include <securec.h>
 #include <sys/time.h>
@@ -79,6 +81,20 @@ std::string NfcSdkCommon::UnsignedCharToHexString(const unsigned char src)
     return result;
 }
 
+bool NfcSdkCommon::ParseHexOctet(const std::string &text, unsigned int &out)
+{
+    if (text.empty()) {
+        return false;
+    }
+    unsigned int value = 0;
+    auto result = std::from_chars(text.data(), text.data() + text.size(), value, HEX_DECIMAL);
+    if (result.ec != std::errc() || result.ptr != text.data() + text.size() || value > 0xFF) {
+        return false;
+    }
+    out = value;
+    return true;
+}
+
 void NfcSdkCommon::HexStringToBytes(const std::string &src, std::vector<unsigned char> &bytes)
 {
     if (src.empty()) {
@@ -90,8 +106,8 @@ void NfcSdkCommon::HexStringToBytes(const std::string &src, std::vector<unsigned
     unsigned int srcIntValue;
     for (uint32_t i = 0; i < bytesLen; i++) {
         strByte = src.substr(i * HEX_BYTE_LEN, HEX_BYTE_LEN);
-        if (sscanf_s(strByte.c_str(), "%x", &srcIntValue) <= 0) {
-            ErrorLog("HexStringToBytes, sscanf_s failed.");
+        if (!ParseHexOctet(strByte, srcIntValue)) {
+            ErrorLog("HexStringToBytes, leftover or invalid hex octet.");
             bytes.clear();
             return;
         }
@@ -122,8 +138,8 @@ unsigned char NfcSdkCommon::GetByteFromHexStr(const std::string src, uint32_t in
     }
     std::string strByte = src.substr(index * HEX_BYTE_LEN, HEX_BYTE_LEN);
     unsigned int srcIntValue;
-    if (sscanf_s(strByte.c_str(), "%x", &srcIntValue) <= 0) {
-        ErrorLog("GetByteFromHexStr, sscanf_s failed.");
+    if (!ParseHexOctet(strByte, srcIntValue)) {
+        ErrorLog("GetByteFromHexStr, leftover or invalid hex octet.");
         return 0;
     }
     return static_cast<unsigned char>(srcIntValue & 0xFF);
